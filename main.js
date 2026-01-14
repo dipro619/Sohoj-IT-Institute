@@ -68,14 +68,17 @@ document.addEventListener("click", (e) => {
 
 // Mobile Navigation Active State
 mobileNavItems.forEach(item => {
-  if (item.tagName === "A") {
+  if (item.tagName === "A" || item.tagName === "BUTTON") {
     item.addEventListener("click", function(e) {
-      mobileNavItems.forEach(i => {
-        if (i.tagName === "A") {
-          i.classList.remove("active");
-        }
-      });
-      this.classList.add("active");
+      // Only update active state for navigation items, not profile/user items
+      if (!this.classList.contains('user-item') && !this.classList.contains('signup-item')) {
+        mobileNavItems.forEach(i => {
+          if (i.tagName === "A" && !i.classList.contains('user-item') && !i.classList.contains('signup-item')) {
+            i.classList.remove("active");
+          }
+        });
+        this.classList.add("active");
+      }
       
       // Add ripple effect
       addRippleEffect(this, e);
@@ -464,8 +467,8 @@ function updateAuthButtons() {
       newBtn.addEventListener('click', showUserDropdown);
     }
     
-    // Update mobile navigation
-    updateMobileProfileButton();
+    // Update mobile navigation - Change "Account" to "User"
+    updateMobileUserButton();
   } else {
     // User is not logged in - show sign up buttons
     if (desktopSignUpBtn) {
@@ -485,42 +488,72 @@ function updateAuthButtons() {
     }
     
     if (mobileSignUpNav) {
-      mobileSignUpNav.innerHTML = `
-        <i class="ri-user-add-line mobile-nav__icon"></i>
-        <span class="mobile-nav__label">Account</span>
-      `;
-      
-      const newMobileBtn = mobileSignUpNav.cloneNode(true);
-      mobileSignUpNav.parentNode.replaceChild(newMobileBtn, mobileSignUpNav);
-      
-      newMobileBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        if (mobileAccountModal) {
-          mobileAccountModal.style.display = "block";
-          document.body.style.overflow = "hidden";
-        }
-      });
+      // Change back to "Account" when logged out
+      updateMobileAccountButton();
     }
   }
 }
 
-// Update Mobile Profile Button
-function updateMobileProfileButton() {
+// Update Mobile Button to show "User" when logged in
+function updateMobileUserButton() {
   const mobileSignUpNav = document.getElementById('mobile-signup-nav');
   if (mobileSignUpNav && currentUser) {
+    // Remove any existing classes
+    mobileSignUpNav.classList.remove('signup-item', 'profile-item');
+    
+    // Add user-item class
+    mobileSignUpNav.classList.add('user-item');
+    
+    // Update the HTML to show "User" with user icon
     mobileSignUpNav.innerHTML = `
       <i class="ri-user-line mobile-nav__icon"></i>
-      <span class="mobile-nav__label">Profile</span>
+      <span class="mobile-nav__label">User</span>
     `;
     
-    // Add profile-item class for styling
-    mobileSignUpNav.classList.add('profile-item');
+    // Update data-tooltip
+    mobileSignUpNav.setAttribute('data-tooltip', 'User Profile');
     
+    // Clone and replace to ensure fresh event listeners
     const newMobileBtn = mobileSignUpNav.cloneNode(true);
     mobileSignUpNav.parentNode.replaceChild(newMobileBtn, mobileSignUpNav);
     
+    // Add dropdown event
     newMobileBtn.addEventListener('click', showUserDropdown);
+  }
+}
+
+// Update Mobile Button to show "Account" when logged out
+function updateMobileAccountButton() {
+  const mobileSignUpNav = document.getElementById('mobile-signup-nav');
+  if (mobileSignUpNav) {
+    // Remove user-item class
+    mobileSignUpNav.classList.remove('user-item', 'profile-item');
+    
+    // Add signup-item class
+    mobileSignUpNav.classList.add('signup-item');
+    
+    // Update the HTML to show "Account"
+    mobileSignUpNav.innerHTML = `
+      <i class="ri-user-add-line mobile-nav__icon"></i>
+      <span class="mobile-nav__label">Account</span>
+    `;
+    
+    // Update data-tooltip
+    mobileSignUpNav.setAttribute('data-tooltip', 'Sign In / Sign Up');
+    
+    // Clone and replace to ensure fresh event listeners
+    const newMobileBtn = mobileSignUpNav.cloneNode(true);
+    mobileSignUpNav.parentNode.replaceChild(newMobileBtn, mobileSignUpNav);
+    
+    // Add modal event
+    newMobileBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (mobileAccountModal) {
+        mobileAccountModal.style.display = "block";
+        document.body.style.overflow = "hidden";
+      }
+    });
   }
 }
 
@@ -530,7 +563,7 @@ function showUserDropdown(e) {
   e.stopPropagation();
   
   // Remove existing dropdown if any
-  const existingDropdown = document.querySelector('.user-dropdown');
+  const existingDropdown = document.querySelector('.user-dropdown, .mobile-user-dropdown');
   const existingOverlay = document.querySelector('.dropdown-overlay');
   if (existingDropdown) existingDropdown.remove();
   if (existingOverlay) existingOverlay.remove();
@@ -567,6 +600,9 @@ function showUserDropdown(e) {
     </button>
   `;
   
+  // Store reference to the button that opened the dropdown
+  const button = e.currentTarget;
+  
   // Position dropdown
   if (isMobile) {
     // For mobile: Show at top of screen with overlay
@@ -585,34 +621,32 @@ function showUserDropdown(e) {
     `;
     
     document.body.appendChild(overlay);
+    document.body.appendChild(dropdown);
     
     // Close dropdown when clicking overlay
     overlay.addEventListener('click', () => {
-      dropdown.remove();
-      overlay.remove();
+      closeDropdown();
     });
     
     // Prevent body scroll
     document.body.style.overflow = 'hidden';
   } else {
     // For desktop: Show near the button
-    const button = e.currentTarget;
     const rect = button.getBoundingClientRect();
+    dropdown.style.position = 'fixed';
     dropdown.style.top = `${rect.bottom + 10}px`;
     dropdown.style.right = `${window.innerWidth - rect.right}px`;
+    
+    document.body.appendChild(dropdown);
   }
-  
-  document.body.appendChild(dropdown);
   
   // Add close button event for mobile
   if (isMobile) {
     const closeBtn = dropdown.querySelector('.dropdown-close-btn');
     if (closeBtn) {
-      closeBtn.addEventListener('click', () => {
-        dropdown.remove();
-        const overlay = document.querySelector('.dropdown-overlay');
-        if (overlay) overlay.remove();
-        document.body.style.overflow = '';
+      closeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeDropdown();
       });
     }
   }
@@ -622,10 +656,7 @@ function showUserDropdown(e) {
     e.preventDefault();
     e.stopPropagation();
     handleLogout();
-    dropdown.remove();
-    const overlay = document.querySelector('.dropdown-overlay');
-    if (overlay) overlay.remove();
-    if (isMobile) document.body.style.overflow = '';
+    closeDropdown();
   });
   
   // Add click events to dropdown items
@@ -638,26 +669,32 @@ function showUserDropdown(e) {
       // Handle navigation
       const text = item.textContent.trim();
       showNotification(`Navigating to ${text}...`, 'info');
-      dropdown.remove();
-      const overlay = document.querySelector('.dropdown-overlay');
-      if (overlay) overlay.remove();
-      if (isMobile) document.body.style.overflow = '';
+      closeDropdown();
     });
   });
   
-  // Close dropdown when clicking outside (desktop only)
+  // Function to close dropdown
+  function closeDropdown() {
+    dropdown.remove();
+    const overlay = document.querySelector('.dropdown-overlay');
+    if (overlay) overlay.remove();
+    if (isMobile) document.body.style.overflow = '';
+  }
+  
+  // Close dropdown when clicking outside (for desktop)
   if (!isMobile) {
     setTimeout(() => {
-      const closeDropdown = function(event) {
-        if (!dropdown.contains(event.target) && !e.currentTarget.contains(event.target)) {
-          dropdown.remove();
-          document.removeEventListener('click', closeDropdown);
-          document.removeEventListener('touchstart', closeDropdown);
+      const handleOutsideClick = (event) => {
+        // Check if click is outside dropdown AND outside the button that opened it
+        if (!dropdown.contains(event.target) && !button.contains(event.target)) {
+          closeDropdown();
+          document.removeEventListener('click', handleOutsideClick);
+          document.removeEventListener('touchstart', handleOutsideClick);
         }
       };
       
-      document.addEventListener('click', closeDropdown);
-      document.addEventListener('touchstart', closeDropdown);
+      document.addEventListener('click', handleOutsideClick);
+      document.addEventListener('touchstart', handleOutsideClick);
     }, 0);
   }
 }
@@ -893,8 +930,11 @@ function initMobileAccountModal() {
     mobileSignupNav.addEventListener('click', (e) => {
       e.preventDefault();
       e.stopPropagation();
-      mobileAccountModal.style.display = "block";
-      document.body.style.overflow = "hidden";
+      // Only open modal if it's the account button (not user button)
+      if (mobileSignupNav.classList.contains('signup-item')) {
+        mobileAccountModal.style.display = "block";
+        document.body.style.overflow = "hidden";
+      }
     });
   }
   
@@ -1376,6 +1416,81 @@ function fixDesktopTextDisplay() {
   }
 }
 
+// Global click handler to close dropdowns when clicking outside
+function initGlobalClickHandler() {
+  document.addEventListener('click', (e) => {
+    // Check if click is on the user dropdown close button
+    const closeBtn = e.target.closest('.dropdown-close-btn');
+    if (closeBtn) {
+      const dropdown = closeBtn.closest('.user-dropdown, .mobile-user-dropdown');
+      const overlay = document.querySelector('.dropdown-overlay');
+      if (dropdown) dropdown.remove();
+      if (overlay) overlay.remove();
+      document.body.style.overflow = '';
+      return;
+    }
+    
+    // Check if click is on logout button inside dropdown
+    const logoutBtn = e.target.closest('.logout-btn');
+    if (logoutBtn) {
+      const dropdown = logoutBtn.closest('.user-dropdown, .mobile-user-dropdown');
+      if (dropdown) dropdown.remove();
+      const overlay = document.querySelector('.dropdown-overlay');
+      if (overlay) overlay.remove();
+      document.body.style.overflow = '';
+      return;
+    }
+    
+    // Check if click is on dropdown item (not logout)
+    const dropdownItem = e.target.closest('.dropdown-item:not(.logout-btn)');
+    if (dropdownItem) {
+      const dropdown = dropdownItem.closest('.user-dropdown, .mobile-user-dropdown');
+      if (dropdown) dropdown.remove();
+      const overlay = document.querySelector('.dropdown-overlay');
+      if (overlay) overlay.remove();
+      document.body.style.overflow = '';
+      return;
+    }
+    
+    // Get all user buttons that could open dropdowns
+    const userButtons = document.querySelectorAll('.sign-up-btn, #mobile-signup-nav');
+    let isUserButton = false;
+    
+    // Check if click is on a user button
+    userButtons.forEach(btn => {
+      if (btn.contains(e.target)) {
+        isUserButton = true;
+      }
+    });
+    
+    // If click is NOT on a user button AND there's an open dropdown
+    if (!isUserButton) {
+      const dropdown = document.querySelector('.user-dropdown, .mobile-user-dropdown');
+      const overlay = document.querySelector('.dropdown-overlay');
+      
+      if (dropdown && !dropdown.contains(e.target)) {
+        dropdown.remove();
+        if (overlay) overlay.remove();
+        document.body.style.overflow = '';
+      }
+    }
+  });
+  
+  // Handle Escape key to close dropdowns
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      const dropdown = document.querySelector('.user-dropdown, .mobile-user-dropdown');
+      const overlay = document.querySelector('.dropdown-overlay');
+      
+      if (dropdown) {
+        dropdown.remove();
+        if (overlay) overlay.remove();
+        document.body.style.overflow = '';
+      }
+    }
+  });
+}
+
 // Initialize everything when DOM is loaded
 document.addEventListener("DOMContentLoaded", () => {
   initTheme();
@@ -1384,6 +1499,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initMobileAccountModal();
   addDemoLoginButton(); // Add demo login button
   updateSocialButtonHandlers(); // Update social button handlers
+  initGlobalClickHandler(); // Add global click handler
   initBackToTop();
   initCounters();
   initScrollAnimations();
