@@ -2631,3 +2631,46 @@ body.dark .account-option-btn {
     padding: 1.5rem 2rem !important;
   }
 }
+
+
+
+/* ... existing styles ... */
+
+/* Mobile Navigation - Profile State */
+.mobile-nav__item.user-item {
+  background: var(--gradient) !important;
+  color: var(--white) !important;
+  max-width: 100px;
+  margin-left: 0.5rem;
+  padding: 0.75rem 1rem;
+}
+
+.mobile-nav__item.user-item .mobile-nav__icon,
+.mobile-nav__item.user-item .mobile-nav__label {
+  color: var(--white) !important;
+}
+
+.mobile-nav__item.user-item::after {
+  content: '';
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  background: #10b981;
+  border-radius: 50%;
+  border: 2px solid var(--white);
+}
+
+/* User icon specific styling */
+.mobile-nav__item.user-item .mobile-nav__icon {
+  font-size: 1.6rem;
+}
+
+/* Make the user item stand out more */
+.mobile-nav__item.user-item:hover {
+  background: linear-gradient(135deg, #ff5e62 0%, var(--primary-color) 100%) !important;
+  transform: translateY(-5px) scale(1.05);
+}
+
+/* ... rest of existing styles ... */
