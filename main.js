@@ -13,6 +13,24 @@ const closeMobileAccountModal = document.querySelector(".close-mobile-account");
 const loadingScreen = document.getElementById("loading-screen");
 const backToTop = document.getElementById("back-to-top");
 
+// Authentication Configuration
+const authConfig = {
+  google: {
+    clientId: "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com",
+    scope: "email profile"
+  },
+  facebook: {
+    appId: "YOUR_FACEBOOK_APP_ID",
+    version: "v18.0"
+  },
+  twitter: {
+    clientId: "YOUR_TWITTER_CLIENT_ID"
+  }
+};
+
+// User state
+let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
+
 // Loading Screen
 window.addEventListener("load", () => {
   setTimeout(() => {
@@ -199,6 +217,547 @@ function createConfetti() {
   }
 }
 
+// Authentication Functions
+function initAuthentication() {
+  // Load Google Sign-In API
+  loadGoogleAPI();
+  
+  // Load Facebook SDK
+  loadFacebookSDK();
+  
+  // Load Twitter SDK
+  loadTwitterSDK();
+  
+  // Check if user is already logged in
+  checkAuthState();
+  
+  // Add login/logout button to desktop nav
+  updateAuthButtons();
+}
+
+function loadGoogleAPI() {
+  const script = document.createElement('script');
+  script.src = 'https://accounts.google.com/gsi/client';
+  script.async = true;
+  script.defer = true;
+  document.head.appendChild(script);
+}
+
+function loadFacebookSDK() {
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId: authConfig.facebook.appId,
+      cookie: true,
+      xfbml: true,
+      version: authConfig.facebook.version
+    });
+    
+    // Check login status
+    FB.getLoginStatus(function(response) {
+      if (response.status === 'connected') {
+        handleFacebookResponse(response);
+      }
+    });
+  };
+
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "https://connect.facebook.net/en_US/sdk.js";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jsscript'));
+}
+
+function loadTwitterSDK() {
+  const script = document.createElement('script');
+  script.src = 'https://platform.twitter.com/widgets.js';
+  script.async = true;
+  script.charset = 'utf-8';
+  document.head.appendChild(script);
+}
+
+// Google Sign-In Handler
+function handleGoogleSignIn() {
+  if (typeof google !== 'undefined' && google.accounts) {
+    const client = google.accounts.oauth2.initTokenClient({
+      client_id: authConfig.google.clientId,
+      scope: authConfig.google.scope,
+      callback: async (response) => {
+        if (response.access_token) {
+          try {
+            // Get user info from Google API
+            const userInfo = await fetchGoogleUserInfo(response.access_token);
+            userInfo.provider = 'google';
+            userInfo.accessToken = response.access_token;
+            handleLoginSuccess(userInfo);
+          } catch (error) {
+            console.error('Google login error:', error);
+            showNotification('Failed to login with Google', 'info');
+          }
+        }
+      }
+    });
+    client.requestAccessToken();
+  } else {
+    showNotification('Google sign-in is not available. Please try again.', 'info');
+  }
+}
+
+async function fetchGoogleUserInfo(accessToken) {
+  const response = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+    headers: {
+      'Authorization': `Bearer ${accessToken}`
+    }
+  });
+  return await response.json();
+}
+
+// Facebook Login Handler
+function handleFacebookLogin() {
+  if (typeof FB !== 'undefined') {
+    FB.login(function(response) {
+      if (response.authResponse) {
+        handleFacebookResponse(response);
+      }
+    }, { scope: 'email,public_profile' });
+  } else {
+    showNotification('Facebook sign-in is not available. Please try again.', 'info');
+  }
+}
+
+function handleFacebookResponse(response) {
+  if (response.status === 'connected') {
+    FB.api('/me', { fields: 'id,name,email,picture' }, function(userInfo) {
+      userInfo.provider = 'facebook';
+      userInfo.accessToken = response.authResponse.accessToken;
+      userInfo.picture = userInfo.picture?.data?.url || `https://graph.facebook.com/${userInfo.id}/picture?type=large`;
+      handleLoginSuccess(userInfo);
+    });
+  }
+}
+
+// Twitter Login Handler
+function handleTwitterLogin() {
+  // Twitter OAuth 2.0 Implementation
+  const twitterAuthUrl = `https://twitter.com/i/oauth2/authorize?response_type=code&client_id=${authConfig.twitter.clientId}&redirect_uri=${encodeURIComponent(window.location.origin)}&scope=tweet.read%20users.read%20follows.read&state=twitter_login&code_challenge=challenge&code_challenge_method=plain`;
+  
+  // Open Twitter auth in popup
+  const width = 600;
+  const height = 700;
+  const left = (window.innerWidth - width) / 2;
+  const top = (window.innerHeight - height) / 2;
+  
+  const popup = window.open(
+    twitterAuthUrl,
+    'twitter_auth',
+    `width=${width},height=${height},top=${top},left=${left}`
+  );
+  
+  if (!popup) {
+    showNotification('Please allow popups for Twitter login', 'info');
+    return;
+  }
+  
+  // Poll for popup closure
+  const checkPopup = setInterval(() => {
+    if (popup.closed) {
+      clearInterval(checkPopup);
+      // In a real implementation, you would exchange the code for a token via your backend
+      // For demo purposes, we'll show a message
+      showNotification('Twitter login would redirect to your backend for token exchange', 'info');
+    }
+  }, 500);
+}
+
+// Demo Login Handler
+function handleDemoLogin() {
+  const demoUser = {
+    id: 'demo123',
+    name: 'Demo User',
+    email: 'demo@shohojit.com',
+    picture: 'https://ui-avatars.com/api/?name=Demo+User&background=ff8906&color=fff&size=128',
+    provider: 'demo',
+    loggedInAt: new Date().toISOString()
+  };
+  
+  handleLoginSuccess(demoUser);
+}
+
+// Main Login Handler
+function handleLoginSuccess(userData) {
+  // Store user data
+  currentUser = {
+    id: userData.id || userData.sub || `demo_${Date.now()}`,
+    name: userData.name || 'Demo User',
+    email: userData.email || 'demo@shohojit.com',
+    picture: userData.picture || userData.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.name || 'User')}&background=ff8906&color=fff`,
+    provider: userData.provider || 'demo',
+    accessToken: userData.accessToken || 'demo_token',
+    loggedInAt: new Date().toISOString()
+  };
+  
+  // Save to localStorage
+  localStorage.setItem('currentUser', JSON.stringify(currentUser));
+  
+  // Close all modals
+  if (modal) modal.style.display = "none";
+  if (mobileAccountModal) mobileAccountModal.style.display = "none";
+  document.body.style.overflow = "auto";
+  
+  // Update UI
+  updateAuthButtons();
+  
+  // Show welcome notification
+  showNotification(`Welcome back, ${currentUser.name.split(' ')[0]}!`, 'success');
+  
+  // Dispatch custom event for other components
+  document.dispatchEvent(new CustomEvent('authStateChanged', { detail: { user: currentUser } }));
+}
+
+// Logout Handler
+function handleLogout() {
+  // Clear user data
+  currentUser = null;
+  localStorage.removeItem('currentUser');
+  
+  // Logout from Google
+  if (typeof google !== 'undefined' && google.accounts) {
+    google.accounts.id.disableAutoSelect();
+  }
+  
+  // Logout from Facebook
+  if (typeof FB !== 'undefined') {
+    FB.logout();
+  }
+  
+  // Update UI
+  updateAuthButtons();
+  
+  // Show notification
+  showNotification('Logged out successfully', 'success');
+  
+  // Dispatch custom event
+  document.dispatchEvent(new CustomEvent('authStateChanged', { detail: { user: null } }));
+}
+
+// Update Auth Buttons in UI
+function updateAuthButtons() {
+  const desktopSignUpBtn = document.querySelector('.sign-up-btn');
+  const mobileSignUpNav = document.getElementById('mobile-signup-nav');
+  
+  if (currentUser) {
+    // User is logged in - show profile instead of sign up
+    if (desktopSignUpBtn) {
+      desktopSignUpBtn.innerHTML = `
+        <div class="user-avatar">
+          <img src="${currentUser.picture}" alt="${currentUser.name}" onerror="this.onerror=null; this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👤</text></svg>'">
+          <span class="user-name">${currentUser.name.split(' ')[0]}</span>
+          <i class="ri-arrow-down-s-line"></i>
+        </div>
+      `;
+      
+      // Remove old click event and add dropdown
+      const newBtn = desktopSignUpBtn.cloneNode(true);
+      desktopSignUpBtn.parentNode.replaceChild(newBtn, desktopSignUpBtn);
+      
+      newBtn.addEventListener('click', showUserDropdown);
+    }
+    
+    // Update mobile navigation
+    updateMobileProfileButton();
+  } else {
+    // User is not logged in - show sign up buttons
+    if (desktopSignUpBtn) {
+      desktopSignUpBtn.innerHTML = '<i class="ri-user-line"></i> Sign In / Sign Up';
+      
+      const newBtn = desktopSignUpBtn.cloneNode(true);
+      desktopSignUpBtn.parentNode.replaceChild(newBtn, desktopSignUpBtn);
+      
+      newBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (modal) {
+          modal.style.display = "block";
+          document.body.style.overflow = "hidden";
+        }
+      });
+    }
+    
+    if (mobileSignUpNav) {
+      mobileSignUpNav.innerHTML = `
+        <i class="ri-user-add-line mobile-nav__icon"></i>
+        <span class="mobile-nav__label">Account</span>
+      `;
+      
+      const newMobileBtn = mobileSignUpNav.cloneNode(true);
+      mobileSignUpNav.parentNode.replaceChild(newMobileBtn, mobileSignUpNav);
+      
+      newMobileBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (mobileAccountModal) {
+          mobileAccountModal.style.display = "block";
+          document.body.style.overflow = "hidden";
+        }
+      });
+    }
+  }
+}
+
+// Update Mobile Profile Button
+function updateMobileProfileButton() {
+  const mobileSignUpNav = document.getElementById('mobile-signup-nav');
+  if (mobileSignUpNav && currentUser) {
+    mobileSignUpNav.innerHTML = `
+      <i class="ri-user-line mobile-nav__icon"></i>
+      <span class="mobile-nav__label">Profile</span>
+    `;
+    
+    // Add profile-item class for styling
+    mobileSignUpNav.classList.add('profile-item');
+    
+    const newMobileBtn = mobileSignUpNav.cloneNode(true);
+    mobileSignUpNav.parentNode.replaceChild(newMobileBtn, mobileSignUpNav);
+    
+    newMobileBtn.addEventListener('click', showUserDropdown);
+  }
+}
+
+// User Dropdown Menu
+function showUserDropdown(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  
+  // Remove existing dropdown if any
+  const existingDropdown = document.querySelector('.user-dropdown');
+  const existingOverlay = document.querySelector('.dropdown-overlay');
+  if (existingDropdown) existingDropdown.remove();
+  if (existingOverlay) existingOverlay.remove();
+  
+  if (!currentUser) return;
+  
+  const dropdown = document.createElement('div');
+  const isMobile = window.innerWidth < 769;
+  
+  dropdown.className = isMobile ? 'mobile-user-dropdown' : 'user-dropdown';
+  dropdown.innerHTML = `
+    <div class="dropdown-header">
+      ${isMobile ? '<button class="dropdown-close-btn"><i class="ri-close-line"></i></button>' : ''}
+      <img src="${currentUser.picture}" alt="${currentUser.name}" onerror="this.onerror=null; this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👤</text></svg>'">
+      <div>
+        <h4>${currentUser.name}</h4>
+        <p>${currentUser.email}</p>
+        <small>Logged in via ${currentUser.provider}</small>
+      </div>
+    </div>
+    <div class="dropdown-divider"></div>
+    <a href="#" class="dropdown-item">
+      <i class="ri-user-line"></i> My Profile
+    </a>
+    <a href="courses.html" class="dropdown-item">
+      <i class="ri-book-line"></i> My Courses
+    </a>
+    <a href="#" class="dropdown-item">
+      <i class="ri-settings-3-line"></i> Settings
+    </a>
+    <div class="dropdown-divider"></div>
+    <button class="dropdown-item logout-btn">
+      <i class="ri-logout-box-r-line"></i> Logout
+    </button>
+  `;
+  
+  // Position dropdown
+  if (isMobile) {
+    // For mobile: Show at top of screen with overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'dropdown-overlay';
+    overlay.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(5px);
+      z-index: 1001;
+      animation: fadeIn 0.3s ease;
+    `;
+    
+    document.body.appendChild(overlay);
+    
+    // Close dropdown when clicking overlay
+    overlay.addEventListener('click', () => {
+      dropdown.remove();
+      overlay.remove();
+    });
+    
+    // Prevent body scroll
+    document.body.style.overflow = 'hidden';
+  } else {
+    // For desktop: Show near the button
+    const button = e.currentTarget;
+    const rect = button.getBoundingClientRect();
+    dropdown.style.top = `${rect.bottom + 10}px`;
+    dropdown.style.right = `${window.innerWidth - rect.right}px`;
+  }
+  
+  document.body.appendChild(dropdown);
+  
+  // Add close button event for mobile
+  if (isMobile) {
+    const closeBtn = dropdown.querySelector('.dropdown-close-btn');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', () => {
+        dropdown.remove();
+        const overlay = document.querySelector('.dropdown-overlay');
+        if (overlay) overlay.remove();
+        document.body.style.overflow = '';
+      });
+    }
+  }
+  
+  // Add click event to logout button
+  dropdown.querySelector('.logout-btn').addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    handleLogout();
+    dropdown.remove();
+    const overlay = document.querySelector('.dropdown-overlay');
+    if (overlay) overlay.remove();
+    if (isMobile) document.body.style.overflow = '';
+  });
+  
+  // Add click events to dropdown items
+  dropdown.querySelectorAll('.dropdown-item').forEach(item => {
+    item.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (item.classList.contains('logout-btn')) return;
+      
+      // Handle navigation
+      const text = item.textContent.trim();
+      showNotification(`Navigating to ${text}...`, 'info');
+      dropdown.remove();
+      const overlay = document.querySelector('.dropdown-overlay');
+      if (overlay) overlay.remove();
+      if (isMobile) document.body.style.overflow = '';
+    });
+  });
+  
+  // Close dropdown when clicking outside (desktop only)
+  if (!isMobile) {
+    setTimeout(() => {
+      const closeDropdown = function(event) {
+        if (!dropdown.contains(event.target) && !e.currentTarget.contains(event.target)) {
+          dropdown.remove();
+          document.removeEventListener('click', closeDropdown);
+          document.removeEventListener('touchstart', closeDropdown);
+        }
+      };
+      
+      document.addEventListener('click', closeDropdown);
+      document.addEventListener('touchstart', closeDropdown);
+    }, 0);
+  }
+}
+
+// Check Authentication State
+function checkAuthState() {
+  // Check localStorage
+  const storedUser = localStorage.getItem('currentUser');
+  if (storedUser) {
+    try {
+      currentUser = JSON.parse(storedUser);
+      
+      // Check if token is expired (simple check - in production would verify with backend)
+      const loginTime = new Date(currentUser.loggedInAt);
+      const now = new Date();
+      const hoursDiff = (now - loginTime) / (1000 * 60 * 60);
+      
+      if (hoursDiff > 24) { // Token expires after 24 hours
+        handleLogout();
+        showNotification('Session expired. Please login again.', 'info');
+      } else {
+        updateAuthButtons();
+      }
+    } catch (e) {
+      localStorage.removeItem('currentUser');
+      currentUser = null;
+    }
+  }
+}
+
+// Update Social Button Handlers
+function updateSocialButtonHandlers() {
+  // Google Login
+  const googleButtons = document.querySelectorAll('.social-btn.google, .quick-social-btn.google');
+  googleButtons.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      handleGoogleSignIn();
+    });
+  });
+  
+  // Facebook Login
+  const facebookButtons = document.querySelectorAll('.social-btn.facebook, .quick-social-btn.facebook');
+  facebookButtons.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      handleFacebookLogin();
+    });
+  });
+  
+  // Twitter Login
+  const twitterButtons = document.querySelectorAll('.social-btn.twitter, .quick-social-btn.twitter');
+  twitterButtons.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      handleTwitterLogin();
+    });
+  });
+  
+  // Demo Login
+  const demoButtons = document.querySelectorAll('.social-btn.demo, .quick-social-btn.demo');
+  demoButtons.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      handleDemoLogin();
+    });
+  });
+}
+
+// Add Demo Login Button
+function addDemoLoginButton() {
+  // Add demo button to desktop modal
+  const socialLoginDesktop = modal?.querySelector('.social-login');
+  if (socialLoginDesktop && !socialLoginDesktop.querySelector('.social-btn.demo')) {
+    const demoBtn = document.createElement('button');
+    demoBtn.className = 'social-btn demo';
+    demoBtn.innerHTML = '<i class="ri-code-s-slash-line"></i> Try Demo Login';
+    demoBtn.style.background = '#6b7280';
+    demoBtn.style.marginTop = '0.5rem';
+    socialLoginDesktop.appendChild(demoBtn);
+  }
+  
+  // Add demo button to mobile modal
+  const quickSocial = mobileAccountModal?.querySelector('.quick-social');
+  if (quickSocial) {
+    const quickSocialBtns = quickSocial.querySelector('.quick-social-btns');
+    if (quickSocialBtns && !quickSocialBtns.querySelector('.quick-social-btn.demo')) {
+      const demoBtn = document.createElement('button');
+      demoBtn.className = 'quick-social-btn demo';
+      demoBtn.innerHTML = '<i class="ri-code-s-slash-line"></i>';
+      demoBtn.style.background = '#6b7280';
+      quickSocialBtns.appendChild(demoBtn);
+    }
+  }
+}
+
 // Modal Functions for Desktop
 function initDesktopModal() {
   if (!modal || !closeModal) return;
@@ -254,11 +813,11 @@ function initDesktopModal() {
       
       // Show corresponding form
       if (option === 'signin') {
-        signinForm.style.display = 'block';
-        signupForm.style.display = 'none';
+        if (signinForm) signinForm.style.display = 'block';
+        if (signupForm) signupForm.style.display = 'none';
       } else {
-        signinForm.style.display = 'none';
-        signupForm.style.display = 'block';
+        if (signinForm) signinForm.style.display = 'none';
+        if (signupForm) signupForm.style.display = 'block';
       }
     });
   });
@@ -270,16 +829,19 @@ function initDesktopModal() {
       const target = link.getAttribute('data-target');
       
       // Update active button
-      optionBtns.forEach(b => b.classList.remove('active'));
-      document.querySelector(`.option-btn[data-option="${target}"]`).classList.add('active');
-      
-      // Show corresponding form
-      if (target === 'signin') {
-        signinForm.style.display = 'block';
-        signupForm.style.display = 'none';
-      } else {
-        signinForm.style.display = 'none';
-        signupForm.style.display = 'block';
+      const targetBtn = document.querySelector(`.option-btn[data-option="${target}"]`);
+      if (targetBtn) {
+        optionBtns.forEach(b => b.classList.remove('active'));
+        targetBtn.classList.add('active');
+        
+        // Show corresponding form
+        if (target === 'signin') {
+          if (signinForm) signinForm.style.display = 'block';
+          if (signupForm) signupForm.style.display = 'none';
+        } else {
+          if (signinForm) signinForm.style.display = 'none';
+          if (signupForm) signupForm.style.display = 'block';
+        }
       }
     });
   });
@@ -318,27 +880,7 @@ function initDesktopModal() {
   }
   
   // Social login buttons
-  const socialBtns = document.querySelectorAll(".social-btn");
-  socialBtns.forEach(btn => {
-    btn.addEventListener("click", () => {
-      const originalHTML = btn.innerHTML;
-      btn.innerHTML = '<i class="ri-loader-4-line animate-spin"></i> Connecting...';
-      
-      // Simulate API call
-      setTimeout(() => {
-        modal.style.display = "none";
-        document.body.style.overflow = "auto";
-        
-        // Show success notification
-        showNotification("Successfully connected!", "success");
-        
-        // Reset button text
-        setTimeout(() => {
-          btn.innerHTML = originalHTML;
-        }, 1000);
-      }, 1500);
-    });
-  });
+  updateSocialButtonHandlers();
 }
 
 // Mobile Account Modal Functions
@@ -350,6 +892,7 @@ function initMobileAccountModal() {
   if (mobileSignupNav) {
     mobileSignupNav.addEventListener('click', (e) => {
       e.preventDefault();
+      e.stopPropagation();
       mobileAccountModal.style.display = "block";
       document.body.style.overflow = "hidden";
     });
@@ -372,17 +915,18 @@ function initMobileAccountModal() {
   // Handle option selection in mobile modal
   const signinOption = document.querySelector('.signin-option');
   const signupOption = document.querySelector('.signup-option');
-  const quickSocialBtns = document.querySelectorAll('.quick-social-btn');
   
   if (signinOption) {
     signinOption.addEventListener('click', () => {
       mobileAccountModal.style.display = "none";
       // Show sign in form in main modal
-      modal.style.display = "block";
-      
-      // Switch to sign in form
-      const signinBtn = document.querySelector('.option-btn[data-option="signin"]');
-      if (signinBtn) signinBtn.click();
+      if (modal) {
+        modal.style.display = "block";
+        
+        // Switch to sign in form
+        const signinBtn = document.querySelector('.option-btn[data-option="signin"]');
+        if (signinBtn) signinBtn.click();
+      }
     });
   }
   
@@ -390,23 +934,32 @@ function initMobileAccountModal() {
     signupOption.addEventListener('click', () => {
       mobileAccountModal.style.display = "none";
       // Show sign up form in main modal
-      modal.style.display = "block";
-      
-      // Switch to sign up form
-      const signupBtn = document.querySelector('.option-btn[data-option="signup"]');
-      if (signupBtn) signupBtn.click();
+      if (modal) {
+        modal.style.display = "block";
+        
+        // Switch to sign up form
+        const signupBtn = document.querySelector('.option-btn[data-option="signup"]');
+        if (signupBtn) signupBtn.click();
+      }
     });
   }
   
   // Quick social buttons in mobile modal
+  const quickSocialBtns = document.querySelectorAll('.quick-social-btn');
   quickSocialBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      
       const platform = btn.classList.contains('google') ? 'Google' : 
-                      btn.classList.contains('facebook') ? 'Facebook' : 'Twitter';
+                      btn.classList.contains('facebook') ? 'Facebook' : 
+                      btn.classList.contains('demo') ? 'Demo' : 'Twitter';
       
       // Show loading
-      const originalContent = mobileAccountModal.innerHTML;
-      mobileAccountModal.querySelector('.modal-body').innerHTML = `
+      const modalBody = mobileAccountModal.querySelector('.modal-body');
+      const originalContent = modalBody.innerHTML;
+      
+      modalBody.innerHTML = `
         <div class="loading-auth">
           <i class="ri-loader-4-line animate-spin" style="font-size: 3rem; color: var(--primary-color);"></i>
           <p>Connecting with ${platform}...</p>
@@ -418,12 +971,20 @@ function initMobileAccountModal() {
         mobileAccountModal.style.display = "none";
         document.body.style.overflow = "auto";
         
-        // Show success notification
-        showNotification(`Connected with ${platform}!`, "success");
+        // Handle login based on platform
+        if (platform === 'Google') {
+          handleGoogleSignIn();
+        } else if (platform === 'Facebook') {
+          handleFacebookLogin();
+        } else if (platform === 'Twitter') {
+          handleTwitterLogin();
+        } else if (platform === 'Demo') {
+          handleDemoLogin();
+        }
         
         // Reset modal content
         setTimeout(() => {
-          mobileAccountModal.innerHTML = originalContent;
+          modalBody.innerHTML = originalContent;
           initMobileAccountModal(); // Reinitialize event listeners
         }, 100);
       }, 1500);
@@ -449,8 +1010,16 @@ function simulateAuth(loadingMessage, successMessage) {
     modal.style.display = "none";
     document.body.style.overflow = "auto";
     
-    // Show success notification
-    showNotification(successMessage, "success");
+    // For demo, create a demo user
+    const demoUser = {
+      id: 'email_' + Date.now(),
+      name: document.getElementById('signup-name')?.value || 'User',
+      email: document.getElementById('signup-email')?.value || document.getElementById('signin-email')?.value || 'user@example.com',
+      provider: 'email',
+      loggedInAt: new Date().toISOString()
+    };
+    
+    handleLoginSuccess(demoUser);
     
     // Reset modal content
     setTimeout(() => {
@@ -810,8 +1379,11 @@ function fixDesktopTextDisplay() {
 // Initialize everything when DOM is loaded
 document.addEventListener("DOMContentLoaded", () => {
   initTheme();
+  initAuthentication(); // Initialize authentication
   initDesktopModal();
   initMobileAccountModal();
+  addDemoLoginButton(); // Add demo login button
+  updateSocialButtonHandlers(); // Update social button handlers
   initBackToTop();
   initCounters();
   initScrollAnimations();
@@ -884,6 +1456,60 @@ document.addEventListener("DOMContentLoaded", () => {
       justify-content: center;
       padding: 3rem 1rem;
       text-align: center;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    @keyframes modalSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes dropdownSlideInDesktop {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes dropdownSlideInMobile {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    }
+    
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.7);
+      transform: scale(0);
+      animation: ripple-animation 0.6s linear;
+      pointer-events: none;
+    }
+    
+    @keyframes ripple-animation {
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
     }
   `;
   document.head.appendChild(style);
@@ -965,6 +1591,12 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
     
+    // Login with Ctrl+L
+    if (e.ctrlKey && e.key === "l") {
+      e.preventDefault();
+      handleDemoLogin();
+    }
+    
     // Close modal with Escape
     if (e.key === "Escape") {
       if (modal) {
@@ -974,6 +1606,17 @@ document.addEventListener("DOMContentLoaded", () => {
       if (mobileAccountModal) {
         mobileAccountModal.style.display = "none";
         document.body.style.overflow = "auto";
+      }
+      
+      // Close user dropdown
+      const dropdown = document.querySelector('.user-dropdown, .mobile-user-dropdown');
+      const overlay = document.querySelector('.dropdown-overlay');
+      if (dropdown) {
+        dropdown.remove();
+      }
+      if (overlay) {
+        overlay.remove();
+        document.body.style.overflow = '';
       }
     }
   });
