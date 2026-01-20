@@ -2674,3 +2674,141 @@ body.dark .account-option-btn {
 }
 
 /* ... rest of existing styles ... */
+
+
+
+
+/* Mobile Navigation - Updated for 7 items */
+.mobile-nav__links {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+}
+
+.mobile-nav__links li {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.mobile-nav__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    color: var(--text-light);
+    padding: 0.6rem 0.4rem;
+    border-radius: 12px;
+    transition: var(--transition);
+    width: 100%;
+    max-width: 70px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-family: inherit;
+    position: relative;
+    min-height: 70px;
+}
+
+/* For the 7th item (Account) */
+.mobile-nav__item#mobile-signup-nav {
+    background: var(--gradient);
+    color: var(--white) !important;
+    padding: 0.6rem 0.4rem;
+    max-width: 70px;
+}
+
+.mobile-nav__item#mobile-signup-nav .mobile-nav__icon,
+.mobile-nav__item#mobile-signup-nav .mobile-nav__label {
+    color: var(--white) !important;
+}
+
+.mobile-nav__icon {
+    font-size: 1.3rem;
+    transition: var(--transition);
+}
+
+.mobile-nav__label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    transition: var(--transition);
+    text-align: center;
+    line-height: 1.1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+
+/* Active state for all items */
+.mobile-nav__item.active,
+.mobile-nav__item:hover {
+    color: var(--primary-color);
+    background: rgba(var(--primary-color-rgb), 0.1);
+    transform: translateY(-3px);
+}
+
+.mobile-nav__item#mobile-signup-nav.active,
+.mobile-nav__item#mobile-signup-nav:hover {
+    background: linear-gradient(135deg, #ff5e62 0%, var(--primary-color) 100%);
+    transform: translateY(-3px) scale(1.05);
+}
+
+/* User state styling */
+.mobile-nav__item.user-item {
+    background: var(--gradient) !important;
+    color: var(--white) !important;
+}
+
+.mobile-nav__item.user-item::after {
+    content: '';
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 6px;
+    height: 6px;
+    background: #10b981;
+    border-radius: 50%;
+    border: 1px solid var(--white);
+}
+
+/* Media query adjustments for smaller screens */
+@media (max-width: 380px) {
+    .mobile-nav__item {
+        padding: 0.5rem 0.3rem;
+        max-width: 60px;
+        min-height: 65px;
+    }
+    
+    .mobile-nav__icon {
+        font-size: 1.2rem;
+    }
+    
+    .mobile-nav__label {
+        font-size: 0.65rem;
+    }
+    
+    .mobile-nav__item#mobile-signup-nav {
+        max-width: 60px;
+    }
+}
+
+@media (max-width: 320px) {
+    .mobile-nav {
+        padding: 0.75rem;
+    }
+    
+    .mobile-nav__item {
+        max-width: 55px;
+        min-height: 60px;
+    }
+    
+    .mobile-nav__item#mobile-signup-nav {
+        max-width: 55px;
+    }
+}
