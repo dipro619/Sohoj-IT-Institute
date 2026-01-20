@@ -22,7 +22,7 @@
     <nav>
         <div class="nav__header">
             <div class="nav__logo">
-                <a href="#home" class="logo-link">
+                <a href="index.html" class="logo-link">
                     <i class="ri-code-s-slash-line"></i>
                     <div class="logo-text">
                         <span class="logo-primary">Shohoj IT</span>
@@ -31,10 +31,10 @@
                 </a>
             </div>
             <ul class="nav__links" id="nav-links">
-                <li><a href="#home" class="nav-link"><i class="ri-home-4-line"></i> Home</a></li>
-                <li><a href="#about" class="nav-link"><i class="ri-information-line"></i> About</a></li>
-                <li><a href="#portfolio" class="nav-link"><i class="ri-briefcase-line"></i> Portfolio</a></li>
-                <li><a href="#client" class="nav-link"><i class="ri-user-line"></i> Clients</a></li>
+                <li><a href="index.html" class="nav-link active"><i class="ri-home-4-line"></i> Home</a></li>
+                <li><a href="about.html" class="nav-link"><i class="ri-information-line"></i> About</a></li>
+                <li><a href="portfolio.html" class="nav-link"><i class="ri-briefcase-line"></i> Portfolio</a></li>
+                <li><a href="client.html" class="nav-link"><i class="ri-user-line"></i> Clients</a></li>
                 <li><a href="#contact" class="nav-link"><i class="ri-contacts-line"></i> Contact</a></li>
                 <li><a href="courses.html" class="nav-link"><i class="ri-book-line"></i> Courses</a></li>
             </ul>
@@ -53,43 +53,53 @@
     </nav>
 
     <!-- Mobile Bottom Navigation -->
-    <div class="mobile-nav" id="mobile-nav">
-        <ul class="mobile-nav__links">
-            <li>
-                <a href="#home" class="mobile-nav__item active" data-tooltip="Home">
-                    <i class="ri-home-4-line mobile-nav__icon"></i>
-                    <span class="mobile-nav__label">Home</span>
-                </a>
-            </li>
-            <li>
-                <a href="#about" class="mobile-nav__item" data-tooltip="About">
-                    <i class="ri-information-line mobile-nav__icon"></i>
-                    <span class="mobile-nav__label">About</span>
-                </a>
-            </li>
-            <li>
-                <a href="#portfolio" class="mobile-nav__item" data-tooltip="Portfolio">
-                    <i class="ri-briefcase-line mobile-nav__icon"></i>
-                    <span class="mobile-nav__label">Portfolio</span>
-                </a>
-            </li>
-            <li>
-                <a href="#client" class="mobile-nav__item" data-tooltip="Clients">
-                    <i class="ri-user-line mobile-nav__icon"></i>
-                    <span class="mobile-nav__label">Clients</span>
-                </a>
-            </li>
-            <li>
-                <button class="mobile-nav__item signup-item" id="mobile-signup-nav" data-tooltip="Sign In / Up">
-                    <i class="ri-user-add-line mobile-nav__icon"></i>
-                    <span class="mobile-nav__label">Account</span>
-                </button>
-            </li>
-        </ul>
-    </div>
-
-    <!-- Floating Mobile Sign Up Button -->
-    
+    <!-- Mobile Bottom Navigation -->
+<div class="mobile-nav" id="mobile-nav">
+    <ul class="mobile-nav__links">
+        <li>
+            <a href="index.html" class="mobile-nav__item active" data-tooltip="Home">
+                <i class="ri-home-4-line mobile-nav__icon"></i>
+                <span class="mobile-nav__label">Home</span>
+            </a>
+        </li>
+        <li>
+            <a href="about.html" class="mobile-nav__item" data-tooltip="About">
+                <i class="ri-information-line mobile-nav__icon"></i>
+                <span class="mobile-nav__label">About</span>
+            </a>
+        </li>
+        <li>
+            <a href="portfolio.html" class="mobile-nav__item" data-tooltip="Portfolio">
+                <i class="ri-briefcase-line mobile-nav__icon"></i>
+                <span class="mobile-nav__label">Portfolio</span>
+            </a>
+        </li>
+        <li>
+            <a href="client.html" class="mobile-nav__item" data-tooltip="Clients">
+                <i class="ri-user-line mobile-nav__icon"></i>
+                <span class="mobile-nav__label">Clients</span>
+            </a>
+        </li>
+        <li>
+            <a href="#contact" class="mobile-nav__item" data-tooltip="Contact">
+                <i class="ri-contacts-line mobile-nav__icon"></i>
+                <span class="mobile-nav__label">Contact</span>
+            </a>
+        </li>
+        <li>
+            <a href="courses.html" class="mobile-nav__item" data-tooltip="Courses">
+                <i class="ri-book-line mobile-nav__icon"></i>
+                <span class="mobile-nav__label">Courses</span>
+            </a>
+        </li>
+        <li>
+            <button class="mobile-nav__item" id="mobile-signup-nav" data-tooltip="Sign In / Up">
+                <i class="ri-user-add-line mobile-nav__icon"></i>
+                <span class="mobile-nav__label">Account</span>
+            </button>
+        </li>
+    </ul>
+</div>
 
     <!-- Main Content -->
     <header class="section__container header__container" id="home">
@@ -106,15 +116,15 @@
             
             <div class="stats-container">
                 <div class="stat-item">
-                    <div class="stat-number" data-count="250">0</div>
+                    <div class="stat-number counter" data-count="250">0</div>
                     <div class="stat-label">Projects Done</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-number" data-count="16">0</div>
+                    <div class="stat-number counter" data-count="16">0</div>
                     <div class="stat-label">Years Experience</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-number" data-count="98">0</div>
+                    <div class="stat-number counter" data-count="98">0</div>
                     <div class="stat-label">Happy Clients</div>
                 </div>
             </div>
@@ -200,7 +210,7 @@
                 <img src="images/61d300e994fc08be1040571f_Phase 1 Audit - Méthide Dagda Consulting 4.png" alt="Our Team">
                 <div class="team-badge">
                     <div class="badge-content">
-                        <div class="badge-number">50+</div>
+                        <div class="badge-number counter" data-count="50">0+</div>
                         <div class="badge-text">Expert Team Members</div>
                     </div>
                 </div>
@@ -246,9 +256,9 @@
                 </li>
             </ul>
             <div class="about__btn">
-                <button class="btn">
-                    <i class="ri-team-line"></i> Meet Our Team
-                </button>
+                <a href="about.html" class="btn">
+                    <i class="ri-team-line"></i> Learn More About Us
+                </a>
             </div>
         </div>
     </section>
@@ -456,7 +466,7 @@
         <div class="section__container footer__container">
             <div class="footer__col">
                 <div class="footer__logo">
-                    <a href="#home" class="logo-link">
+                    <a href="index.html" class="logo-link">
                         <i class="ri-code-s-slash-line"></i>
                         <div class="logo-text">
                             <span class="logo-primary">Shohoj IT</span>
@@ -490,7 +500,7 @@
             <div class="footer__col">
                 <h4>Quick Links</h4>
                 <ul class="footer__links">
-                    <li><a href="#about">About Agency</a></li>
+                    <li><a href="about.html">About Agency</a></li>
                     <li><a href="#">Latest News & Blogs</a></li>
                     <li><a href="#">Terms of Service</a></li>
                     <li><a href="#home">Our Services</a></li>
@@ -565,7 +575,7 @@
         <i class="ri-arrow-up-line"></i>
     </a>
 
-    <!-- Auth Modal - Updated with Sign In / Sign Up Options -->
+    <!-- Auth Modal -->
     <div id="auth-modal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
@@ -718,5 +728,55 @@
     <script src="https://unpkg.com/scrollreveal"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="main.js"></script>
+    <script>
+        // Counter animation for home page
+        document.addEventListener("DOMContentLoaded", function() {
+            function animateCounters() {
+                const counters = document.querySelectorAll('.counter');
+                
+                counters.forEach(counter => {
+                    const target = parseInt(counter.getAttribute('data-count')) || 0;
+                    let current = 0;
+                    const duration = 1500;
+                    const increment = target / (duration / 16);
+                    
+                    function updateCounter() {
+                        current += increment;
+                        if (current < target) {
+                            counter.textContent = Math.floor(current);
+                            requestAnimationFrame(updateCounter);
+                        } else {
+                            counter.textContent = target;
+                        }
+                    }
+                    
+                    updateCounter();
+                });
+            }
+            
+            // Start counters after page load
+            setTimeout(animateCounters, 1000);
+            
+            // Update active navigation
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            
+            // Set home as active on home page
+            if (currentPage === 'index.html' || currentPage === '') {
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === 'index.html' || link.getAttribute('href') === '#home') {
+                        link.classList.add('active');
+                    }
+                });
+                
+                document.querySelectorAll('.mobile-nav__item[href]').forEach(item => {
+                    item.classList.remove('active');
+                    if (item.getAttribute('href') === 'index.html' || item.getAttribute('href') === '#home') {
+                        item.classList.add('active');
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
