@@ -1,0 +1,1503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Portfolio | Shohoj IT Agency</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚀</text></svg>">
+    <style>
+        /* Portfolio Page Styles */
+        .portfolio-hero {
+            padding-top: 10rem;
+            padding-bottom: 6rem;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(var(--primary-color-rgb), 0.1) 0%, rgba(255, 94, 98, 0.1) 100%);
+            border-radius: var(--border-radius-lg);
+            margin-bottom: 4rem;
+        }
+        
+        .team-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0 3rem;
+        }
+        
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--white);
+            border: 2px solid var(--extra-light);
+            border-radius: 50px;
+            font-weight: 600;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .tab-btn.active,
+        .tab-btn:hover {
+            background: var(--primary-color);
+            color: var(--white);
+            border-color: var(--primary-color);
+            transform: translateY(-3px);
+        }
+        
+        .tab-btn i {
+            font-size: 1.2rem;
+        }
+        
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+            margin: 4rem 0;
+        }
+        
+        .team-card {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+            height: 100%;
+            position: relative;
+        }
+        
+        .team-card:hover {
+            transform: translateY(-15px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .team-image {
+            height: 300px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .team-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+        
+        .team-card:hover .team-image img {
+            transform: scale(1.05);
+        }
+        
+        .team-content {
+            padding: 2rem;
+        }
+        
+        .team-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+        
+        .team-role {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .team-role i {
+            font-size: 1rem;
+        }
+        
+        .team-bio {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+        
+        .team-skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .skill-tag {
+            padding: 0.25rem 0.75rem;
+            background: rgba(var(--primary-color-rgb), 0.1);
+            color: var(--primary-color);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .team-social {
+            display: flex;
+            gap: 0.75rem;
+        }
+        
+        .team-social a {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--extra-light);
+            color: var(--text-light);
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+        
+        .team-social a:hover {
+            background: var(--primary-color);
+            color: var(--white);
+            transform: translateY(-3px);
+        }
+        
+        /* Advisor Cards */
+        .advisor-card {
+            text-align: center;
+            padding: 2.5rem 2rem;
+            background: var(--white);
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+            height: 100%;
+        }
+        
+        .advisor-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .advisor-image {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 1.5rem;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid var(--white);
+            box-shadow: var(--shadow);
+        }
+        
+        .advisor-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .advisor-company {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* Gallery Section */
+        .gallery-section {
+            background: var(--extra-light);
+            border-radius: var(--border-radius-lg);
+            padding: 4rem 2rem;
+            margin: 4rem 0;
+        }
+        
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+        
+        .gallery-item {
+            position: relative;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            height: 250px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+        
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+        
+        .gallery-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+            display: flex;
+            align-items: flex-end;
+            padding: 1.5rem;
+            opacity: 0;
+            transition: var(--transition);
+        }
+        
+        .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+        }
+        
+        .gallery-info {
+            color: var(--white);
+        }
+        
+        .gallery-category {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: var(--primary-color);
+            color: var(--white);
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Stats Section */
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 4rem 0;
+        }
+        
+        .stat-card {
+            text-align: center;
+            padding: 2.5rem 2rem;
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .stat-icon {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 1.5rem;
+            background: rgba(var(--primary-color-rgb), 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--primary-color);
+            transition: var(--transition);
+        }
+        
+        .stat-card:hover .stat-icon {
+            background: var(--primary-color);
+            color: var(--white);
+            transform: scale(1.1);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: var(--text-light);
+            font-weight: 600;
+        }
+        
+        /* Modal for Gallery */
+        .gallery-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1100;
+            backdrop-filter: blur(10px);
+        }
+        
+        .gallery-modal-content {
+            position: relative;
+            width: 90%;
+            max-width: 1200px;
+            height: 90vh;
+            margin: 5vh auto;
+            background: var(--bg-color);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+        }
+        
+        .gallery-modal-header {
+            padding: 1.5rem 2rem;
+            background: var(--white);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--extra-light);
+        }
+        
+        .gallery-modal-body {
+            height: calc(90vh - 80px);
+            overflow: hidden;
+        }
+        
+        .gallery-modal-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 2rem;
+        }
+        
+        .close-gallery {
+            font-size: 2rem;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: var(--transition);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .close-gallery:hover {
+            background: var(--extra-light);
+            color: var(--primary-color);
+            transform: rotate(90deg);
+        }
+        
+        /* Department Sections */
+        .department-section {
+            margin: 4rem 0;
+        }
+        
+        .department-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .department-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(var(--primary-color-rgb), 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+        
+        /* Team sections visibility - FIXED */
+        .team-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .team-section.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 768px) {
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .team-tabs {
+                overflow-x: auto;
+                justify-content: flex-start;
+                padding-bottom: 1rem;
+            }
+            
+            .tab-btn {
+                white-space: nowrap;
+            }
+            
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .stats-section {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .department-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .team-grid {
+                gap: 1.5rem;
+            }
+            
+            .team-image {
+                height: 250px;
+            }
+        }
+        
+        /* Animation Classes */
+        .fade-in-item {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .fade-in-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .hover-float:hover {
+            animation: hoverFloat 0.6s ease;
+        }
+        
+        @keyframes hoverFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        /* Profile image styles */
+        .profile-gradient {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 2.5rem;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        /* Color gradients for different roles */
+        .gradient-ceo {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .gradient-cto {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .gradient-creative {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .gradient-developer {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+        
+        .gradient-designer {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+        
+        .gradient-marketing {
+            background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
+        }
+        
+        .gradient-advisor {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: #333;
+        }
+        
+        /* Initial letters for profile pictures */
+        .profile-initial {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: bold;
+            color: white;
+            margin: 0 auto;
+            box-shadow: var(--shadow);
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loading-screen">
+        <div class="loader">
+            <div class="loader-circle"></div>
+            <div class="loader-text">Loading<span class="loader-dots">...</span></div>
+        </div>
+    </div>
+
+    <!-- Desktop Navigation -->
+    <nav>
+        <div class="nav__header">
+            <div class="nav__logo">
+                <a href="index.html" class="logo-link">
+                    <i class="ri-code-s-slash-line"></i>
+                    <div class="logo-text">
+                        <span class="logo-primary">Shohoj IT</span>
+                        <span class="logo-secondary">Agency</span>
+                    </div>
+                </a>
+            </div>
+            <ul class="nav__links" id="nav-links">
+                <li><a href="index.html" class="nav-link"><i class="ri-home-4-line"></i> Home</a></li>
+                <li><a href="about.html" class="nav-link"><i class="ri-information-line"></i> About</a></li>
+                <li><a href="portfolio.html" class="nav-link active"><i class="ri-briefcase-line"></i> Portfolio</a></li>
+                <li><a href="client.html" class="nav-link"><i class="ri-user-line"></i> Clients</a></li>
+                <li><a href="index.html#contact" class="nav-link"><i class="ri-contacts-line"></i> Contact</a></li>
+                <li><a href="courses.html" class="nav-link"><i class="ri-book-line"></i> Courses</a></li>
+            </ul>
+            <div class="nav__btns">
+                <button id="dark-mode-toggle-desktop" class="theme-toggle" aria-label="Toggle dark mode">
+                    <i class="ri-moon-line"></i>
+                </button>
+                <button class="btn sign-up-btn pulse-animation">
+                    <i class="ri-user-line"></i> Sign In / Sign Up
+                </button>
+            </div>
+            <div class="nav__menu__btn" id="menu-btn">
+                <i class="ri-menu-line"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Bottom Navigation -->
+    <!-- Mobile Bottom Navigation -->
+<div class="mobile-nav" id="mobile-nav">
+    <ul class="mobile-nav__links">
+        <li>
+            <a href="index.html" class="mobile-nav__item active" data-tooltip="Home">
+                <i class="ri-home-4-line mobile-nav__icon"></i>
+                <span class="mobile-nav__label">Home</span>
+            </a>
+        </li>
+        <li>
+            <a href="about.html" class="mobile-nav__item" data-tooltip="About">
+                <i class="ri-information-line mobile-nav__icon"></i>
+                <span class="mobile-nav__label">About</span>
+            </a>
+        </li>
+        <li>
+            <a href="portfolio.html" class="mobile-nav__item" data-tooltip="Portfolio">
+                <i class="ri-briefcase-line mobile-nav__icon"></i>
+                <span class="mobile-nav__label">Portfolio</span>
+            </a>
+        </li>
+        <li>
+            <a href="client.html" class="mobile-nav__item" data-tooltip="Clients">
+                <i class="ri-user-line mobile-nav__icon"></i>
+                <span class="mobile-nav__label">Clients</span>
+            </a>
+        </li>
+        <li>
+            <a href="#contact" class="mobile-nav__item" data-tooltip="Contact">
+                <i class="ri-contacts-line mobile-nav__icon"></i>
+                <span class="mobile-nav__label">Contact</span>
+            </a>
+        </li>
+        <li>
+            <a href="courses.html" class="mobile-nav__item" data-tooltip="Courses">
+                <i class="ri-book-line mobile-nav__icon"></i>
+                <span class="mobile-nav__label">Courses</span>
+            </a>
+        </li>
+        <li>
+            <button class="mobile-nav__item" id="mobile-signup-nav" data-tooltip="Sign In / Up">
+                <i class="ri-user-add-line mobile-nav__icon"></i>
+                <span class="mobile-nav__label">Account</span>
+            </button>
+        </li>
+    </ul>
+</div>
+
+    <!-- Main Content -->
+    <main class="section__container">
+        <!-- Hero Section -->
+        <section class="portfolio-hero">
+            <div class="section__container">
+                <div class="tagline animate-fade-in">👥 Meet Our Team</div>
+                <h1 class="section__header animate-typing">
+                    Talent Portfolio
+                </h1>
+                <p class="section__subtitle animate-slide-up">
+                    Discover the brilliant minds behind Shohoj IT Agency. From visionary leaders 
+                    to creative experts and strategic advisors, meet the team driving digital innovation.
+                </p>
+            </div>
+        </section>
+
+        <!-- Team Tabs -->
+        <section class="section__container">
+            <div class="team-tabs" id="team-tabs">
+                <button class="tab-btn active" data-team="leadership">
+                    <i class="ri-award-line"></i> Leadership
+                </button>
+                <button class="tab-btn" data-team="development">
+                    <i class="ri-code-line"></i> Development
+                </button>
+                <button class="tab-btn" data-team="design">
+                    <i class="ri-palette-line"></i> Design
+                </button>
+                <button class="tab-btn" data-team="marketing">
+                    <i class="ri-megaphone-line"></i> Marketing
+                </button>
+                <button class="tab-btn" data-team="advisors">
+                    <i class="ri-user-star-line"></i> Advisors
+                </button>
+            </div>
+
+            <!-- Leadership Team - Visible by default -->
+            <div class="team-section active" id="leadership-team">
+                <div class="department-header">
+                    <div>
+                        <h2 class="section__header" style="text-align: left;">Leadership Team</h2>
+                        <p class="section__subtitle" style="text-align: left;">Our visionary leaders guiding the agency's strategy and growth</p>
+                    </div>
+                    <div class="department-icon">
+                        <i class="ri-award-line"></i>
+                    </div>
+                </div>
+                
+                <div class="team-grid">
+                    <div class="team-card hover-float">
+                        <div class="team-image">
+                            <!-- Clean CEO profile image -->
+                            <div class="profile-gradient gradient-ceo">AJ</div>
+                        </div>
+                        <div class="team-content">
+                            <h3 class="team-name">Alex Johnson</h3>
+                            <div class="team-role">
+                                <i class="ri-briefcase-line"></i>
+                                Chief Executive Officer
+                            </div>
+                            <p class="team-bio">
+                                20+ years in digital transformation. Former VP at TechGlobal. 
+                                Spearheaded innovation initiatives for Fortune 500 companies.
+                            </p>
+                            <div class="team-skills">
+                                <span class="skill-tag">Strategy</span>
+                                <span class="skill-tag">Leadership</span>
+                                <span class="skill-tag">Innovation</span>
+                            </div>
+                            <div class="team-social">
+                                <a href="#"><i class="ri-linkedin-fill"></i></a>
+                                <a href="#"><i class="ri-twitter-fill"></i></a>
+                                <a href="#"><i class="ri-mail-line"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="team-card hover-float">
+                        <div class="team-image">
+                            <!-- Clean CTO profile image -->
+                            <div class="profile-gradient gradient-cto">SW</div>
+                        </div>
+                        <div class="team-content">
+                            <h3 class="team-name">Sarah Williams</h3>
+                            <div class="team-role">
+                                <i class="ri-cpu-line"></i>
+                                Chief Technology Officer
+                            </div>
+                            <p class="team-bio">
+                                Former lead engineer at Google. Expert in scalable architectures 
+                                and cutting-edge tech stack implementations.
+                            </p>
+                            <div class="team-skills">
+                                <span class="skill-tag">Architecture</span>
+                                <span class="skill-tag">AI/ML</span>
+                                <span class="skill-tag">Cloud</span>
+                            </div>
+                            <div class="team-social">
+                                <a href="#"><i class="ri-linkedin-fill"></i></a>
+                                <a href="#"><i class="ri-github-fill"></i></a>
+                                <a href="#"><i class="ri-mail-line"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="team-card hover-float">
+                        <div class="team-image">
+                            <!-- Clean Creative Director profile image -->
+                            <div class="profile-gradient gradient-creative">MC</div>
+                        </div>
+                        <div class="team-content">
+                            <h3 class="team-name">Michael Chen</h3>
+                            <div class="team-role">
+                                <i class="ri-palette-line"></i>
+                                Creative Director
+                            </div>
+                            <p class="team-bio">
+                                Award-winning designer with 15+ years experience. Former Art 
+                                Director at DesignStudio. Multiple Behance featured projects.
+                            </p>
+                            <div class="team-skills">
+                                <span class="skill-tag">UI/UX</span>
+                                <span class="skill-tag">Branding</span>
+                                <span class="skill-tag">Animation</span>
+                            </div>
+                            <div class="team-social">
+                                <a href="#"><i class="ri-linkedin-fill"></i></a>
+                                <a href="#"><i class="ri-behance-fill"></i></a>
+                                <a href="#"><i class="ri-mail-line"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Development Team -->
+            <div class="team-section" id="development-team">
+                <div class="department-header">
+                    <div>
+                        <h2 class="section__header" style="text-align: left;">Development Team</h2>
+                        <p class="section__subtitle" style="text-align: left;">Expert developers building robust and scalable digital solutions</p>
+                    </div>
+                    <div class="department-icon">
+                        <i class="ri-code-line"></i>
+                    </div>
+                </div>
+                
+                <div class="team-grid">
+                    <div class="team-card hover-float">
+                        <div class="team-image">
+                            <!-- Clean developer profile image -->
+                            <div class="profile-gradient gradient-developer">DP</div>
+                        </div>
+                        <div class="team-content">
+                            <h3 class="team-name">David Park</h3>
+                            <div class="team-role">
+                                <i class="ri-reactjs-line"></i>
+                                Full Stack Developer
+                            </div>
+                            <p class="team-bio">
+                                Specializes in React, Node.js, and cloud-native applications. 
+                                Built scalable systems for e-commerce platforms.
+                            </p>
+                            <div class="team-skills">
+                                <span class="skill-tag">React</span>
+                                <span class="skill-tag">Node.js</span>
+                                <span class="skill-tag">AWS</span>
+                            </div>
+                            <div class="team-social">
+                                <a href="#"><i class="ri-linkedin-fill"></i></a>
+                                <a href="#"><i class="ri-github-fill"></i></a>
+                                <a href="#"><i class="ri-stack-overflow-line"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="team-card hover-float">
+                        <div class="team-image">
+                            <!-- Clean mobile developer profile image -->
+                            <div class="profile-gradient gradient-developer">LR</div>
+                        </div>
+                        <div class="team-content">
+                            <h3 class="team-name">Lisa Rodriguez</h3>
+                            <div class="team-role">
+                                <i class="ri-smartphone-line"></i>
+                                Mobile Developer
+                            </div>
+                            <p class="team-bio">
+                                Expert in React Native and Flutter. Developed 20+ mobile 
+                                apps with 4.8+ ratings on app stores.
+                            </p>
+                            <div class="team-skills">
+                                <span class="skill-tag">React Native</span>
+                                <span class="skill-tag">Flutter</span>
+                                <span class="skill-tag">iOS/Android</span>
+                            </div>
+                            <div class="team-social">
+                                <a href="#"><i class="ri-linkedin-fill"></i></a>
+                                <a href="#"><i class="ri-github-fill"></i></a>
+                                <a href="#"><i class="ri-app-store-line"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="team-card hover-float">
+                        <div class="team-image">
+                            <!-- Clean backend developer profile image -->
+                            <div class="profile-gradient gradient-developer">RK</div>
+                        </div>
+                        <div class="team-content">
+                            <h3 class="team-name">Robert Kim</h3>
+                            <div class="team-role">
+                                <i class="ri-server-line"></i>
+                                Backend Developer
+                            </div>
+                            <p class="team-bio">
+                                Database architect and API specialist. Built microservices 
+                                handling millions of requests daily.
+                            </p>
+                            <div class="team-skills">
+                                <span class="skill-tag">Python</span>
+                                <span class="skill-tag">Django</span>
+                                <span class="skill-tag">PostgreSQL</span>
+                            </div>
+                            <div class="team-social">
+                                <a href="#"><i class="ri-linkedin-fill"></i></a>
+                                <a href="#"><i class="ri-github-fill"></i></a>
+                                <a href="#"><i class="ri-database-2-line"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Design Team -->
+            <div class="team-section" id="design-team">
+                <div class="department-header">
+                    <div>
+                        <h2 class="section__header" style="text-align: left;">Design Team</h2>
+                        <p class="section__subtitle" style="text-align: left;">Creative minds crafting beautiful and functional user experiences</p>
+                    </div>
+                    <div class="department-icon">
+                        <i class="ri-palette-line"></i>
+                    </div>
+                </div>
+                
+                <div class="team-grid">
+                    <div class="team-card hover-float">
+                        <div class="team-image">
+                            <!-- Clean UI designer profile image -->
+                            <div class="profile-gradient gradient-designer">EW</div>
+                        </div>
+                        <div class="team-content">
+                            <h3 class="team-name">Emma Wilson</h3>
+                            <div class="team-role">
+                                <i class="ri-layout-2-line"></i>
+                                UI/UX Designer
+                            </div>
+                            <p class="team-bio">
+                                Creates intuitive interfaces with focus on accessibility 
+                                and user satisfaction. Figma and Adobe Creative Suite expert.
+                            </p>
+                            <div class="team-skills">
+                                <span class="skill-tag">Figma</span>
+                                <span class="skill-tag">UI Design</span>
+                                <span class="skill-tag">Prototyping</span>
+                            </div>
+                            <div class="team-social">
+                                <a href="#"><i class="ri-linkedin-fill"></i></a>
+                                <a href="#"><i class="ri-behance-fill"></i></a>
+                                <a href="#"><i class="ri-dribbble-fill"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="team-card hover-float">
+                        <div class="team-image">
+                            <!-- Clean UX researcher profile image -->
+                            <div class="profile-gradient gradient-designer">JC</div>
+                        </div>
+                        <div class="team-content">
+                            <h3 class="team-name">James Carter</h3>
+                            <div class="team-role">
+                                <i class="ri-search-eye-line"></i>
+                                UX Researcher
+                            </div>
+                            <p class="team-bio">
+                                Conducts user research and usability testing to inform 
+                                design decisions. Data-driven approach to UX optimization.
+                            </p>
+                            <div class="team-skills">
+                                <span class="skill-tag">User Research</span>
+                                <span class="skill-tag">Analytics</span>
+                                <span class="skill-tag">Usability Testing</span>
+                            </div>
+                            <div class="team-social">
+                                <a href="#"><i class="ri-linkedin-fill"></i></a>
+                                <a href="#"><i class="ri-twitter-fill"></i></a>
+                                <a href="#"><i class="ri-bar-chart-2-line"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="team-card hover-float">
+                        <div class="team-image">
+                            <!-- Clean motion designer profile image -->
+                            <div class="profile-gradient gradient-designer">SL</div>
+                        </div>
+                        <div class="team-content">
+                            <h3 class="team-name">Sophia Lee</h3>
+                            <div class="team-role">
+                                <i class="ri-movie-2-line"></i>
+                                Motion Designer
+                            </div>
+                            <p class="team-bio">
+                                Creates engaging animations and micro-interactions that 
+                                enhance user experience and brand storytelling.
+                            </p>
+                            <div class="team-skills">
+                                <span class="skill-tag">After Effects</span>
+                                <span class="skill-tag">Lottie</span>
+                                <span class="skill-tag">3D Animation</span>
+                            </div>
+                            <div class="team-social">
+                                <a href="#"><i class="ri-linkedin-fill"></i></a>
+                                <a href="#"><i class="ri-behance-fill"></i></a>
+                                <a href="#"><i class="ri-video-line"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Marketing Team -->
+            <div class="team-section" id="marketing-team">
+                <div class="department-header">
+                    <div>
+                        <h2 class="section__header" style="text-align: left;">Marketing Team</h2>
+                        <p class="section__subtitle" style="text-align: left;">Strategists driving brand growth and digital presence</p>
+                    </div>
+                    <div class="department-icon">
+                        <i class="ri-megaphone-line"></i>
+                    </div>
+                </div>
+                
+                <div class="team-grid">
+                    <div class="team-card hover-float">
+                        <div class="team-image">
+                            <!-- Clean marketing head profile image -->
+                            <div class="profile-gradient gradient-marketing">OM</div>
+                        </div>
+                        <div class="team-content">
+                            <h3 class="team-name">Olivia Martinez</h3>
+                            <div class="team-role">
+                                <i class="ri-line-chart-line"></i>
+                                Head of Marketing
+                            </div>
+                            <p class="team-bio">
+                                Digital marketing strategist with expertise in growth 
+                                hacking, content marketing, and brand development.
+                            </p>
+                            <div class="team-skills">
+                                <span class="skill-tag">SEO</span>
+                                <span class="skill-tag">Content Strategy</span>
+                                <span class="skill-tag">Analytics</span>
+                            </div>
+                            <div class="team-social">
+                                <a href="#"><i class="ri-linkedin-fill"></i></a>
+                                <a href="#"><i class="ri-twitter-fill"></i></a>
+                                <a href="#"><i class="ri-instagram-line"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="team-card hover-float">
+                        <div class="team-image">
+                            <!-- Clean content strategist profile image -->
+                            <div class="profile-gradient gradient-marketing">DB</div>
+                        </div>
+                        <div class="team-content">
+                            <h3 class="team-name">Daniel Brown</h3>
+                            <div class="team-role">
+                                <i class="ri-pen-nib-line"></i>
+                                Content Strategist
+                            </div>
+                            <p class="team-bio">
+                                Crafts compelling brand stories and content strategies 
+                                that resonate with target audiences and drive engagement.
+                            </p>
+                            <div class="team-skills">
+                                <span class="skill-tag">Content Writing</span>
+                                <span class="skill-tag">SEO</span>
+                                <span class="skill-tag">Social Media</span>
+                            </div>
+                            <div class="team-social">
+                                <a href="#"><i class="ri-linkedin-fill"></i></a>
+                                <a href="#"><i class="ri-medium-fill"></i></a>
+                                <a href="#"><i class="ri-quill-pen-line"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="team-card hover-float">
+                        <div class="team-image">
+                            <!-- Clean SEO specialist profile image -->
+                            <div class="profile-gradient gradient-marketing">TC</div>
+                        </div>
+                        <div class="team-content">
+                            <h3 class="team-name">Thomas Clark</h3>
+                            <div class="team-role">
+                                <i class="ri-search-line"></i>
+                                SEO Specialist
+                            </div>
+                            <p class="team-bio">
+                                Technical SEO expert with proven track record of improving 
+                                search rankings and organic traffic for clients.
+                            </p>
+                            <div class="team-skills">
+                                <span class="skill-tag">Technical SEO</span>
+                                <span class="skill-tag">Analytics</span>
+                                <span class="skill-tag">Keyword Research</span>
+                            </div>
+                            <div class="team-social">
+                                <a href="#"><i class="ri-linkedin-fill"></i></a>
+                                <a href="#"><i class="ri-google-fill"></i></a>
+                                <a href="#"><i class="ri-line-chart-line"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Advisors -->
+            <div class="team-section" id="advisors-team">
+                <div class="department-header">
+                    <div>
+                        <h2 class="section__header" style="text-align: left;">Board of Advisors</h2>
+                        <p class="section__subtitle" style="text-align: left;">Industry veterans providing strategic guidance and insights</p>
+                    </div>
+                    <div class="department-icon">
+                        <i class="ri-user-star-line"></i>
+                    </div>
+                </div>
+                
+                <div class="team-grid">
+                    <div class="advisor-card hover-float">
+                        <div class="advisor-image">
+                            <!-- Clean advisor profile image -->
+                            <div class="profile-initial gradient-advisor" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);">RT</div>
+                        </div>
+                        <h3 class="team-name">Dr. Richard Taylor</h3>
+                        <div class="team-role">
+                            <i class="ri-lightbulb-flash-line"></i>
+                            Technology Advisor
+                        </div>
+                        <p class="advisor-company">Former CTO, Silicon Valley Tech Giant</p>
+                        <p class="team-bio">
+                            Provides insights on emerging technologies and scalable 
+                            architecture solutions. 30+ years in tech leadership.
+                        </p>
+                    </div>
+                    
+                    <div class="advisor-card hover-float">
+                        <div class="advisor-image">
+                            <!-- Clean advisor profile image -->
+                            <div class="profile-initial gradient-advisor" style="background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);">JP</div>
+                        </div>
+                        <h3 class="team-name">Jennifer Parker</h3>
+                        <div class="team-role">
+                            <i class="ri-briefcase-line"></i>
+                            Business Strategy Advisor
+                        </div>
+                        <p class="advisor-company">Partner at Global Strategy Consultants</p>
+                        <p class="team-bio">
+                            Expert in business growth strategies, market expansion, 
+                            and venture capital fundraising.
+                        </p>
+                    </div>
+                    
+                    <div class="advisor-card hover-float">
+                        <div class="advisor-image">
+                            <!-- Clean advisor profile image -->
+                            <div class="profile-initial gradient-advisor" style="background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);">RG</div>
+                        </div>
+                        <h3 class="team-name">Robert Garcia</h3>
+                        <div class="team-role">
+                            <i class="ri-palette-line"></i>
+                            Design Innovation Advisor
+                        </div>
+                        <p class="advisor-company">Creative Director, International Design Agency</p>
+                        <p class="team-bio">
+                            Advises on design trends, user experience strategies, 
+                            and creative team management.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Team Stats -->
+        <section class="section__container">
+            <div class="stats-section">
+                <div class="stat-card hover-float">
+                    <div class="stat-icon"><i class="ri-team-line"></i></div>
+                    <div class="stat-number counter" data-count="50">0+</div>
+                    <div class="stat-label">Team Members</div>
+                </div>
+                <div class="stat-card hover-float">
+                    <div class="stat-icon"><i class="ri-award-line"></i></div>
+                    <div class="stat-number counter" data-count="15">0+</div>
+                    <div class="stat-label">Years Experience Avg</div>
+                </div>
+                <div class="stat-card hover-float">
+                    <div class="stat-icon"><i class="ri-global-line"></i></div>
+                    <div class="stat-number counter" data-count="10">0+</div>
+                    <div class="stat-label">Countries Represented</div>
+                </div>
+                <div class="stat-card hover-float">
+                    <div class="stat-icon"><i class="ri-graduation-cap-line"></i></div>
+                    <div class="stat-number counter" data-count="85">0%</div>
+                    <div class="stat-label">Advanced Degrees</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gallery Section -->
+        <section class="gallery-section">
+            <div class="section__container">
+                <h2 class="section__header">Our Gallery</h2>
+                <p class="section__subtitle">Behind the scenes moments, team events, and workplace culture</p>
+                
+                <div class="gallery-grid" id="gallery-grid">
+                    <div class="gallery-item fade-in-item" data-category="office">
+                        <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+                        <div class="gallery-overlay">
+                            <div class="gallery-info">
+                                <span class="gallery-category">Office Space</span>
+                                <h4 style="color: white; margin: 0;">Creative Workspace</h4>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="gallery-item fade-in-item" data-category="team">
+                        <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);"></div>
+                        <div class="gallery-overlay">
+                            <div class="gallery-info">
+                                <span class="gallery-category">Team Event</span>
+                                <h4 style="color: white; margin: 0;">Annual Meetup 2024</h4>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="gallery-item fade-in-item" data-category="event">
+                        <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);"></div>
+                        <div class="gallery-overlay">
+                            <div class="gallery-info">
+                                <span class="gallery-category">Conference</span>
+                                <h4 style="color: white; margin: 0;">Tech Summit 2024</h4>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="gallery-item fade-in-item" data-category="award">
+                        <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);"></div>
+                        <div class="gallery-overlay">
+                            <div class="gallery-info">
+                                <span class="gallery-category">Achievement</span>
+                                <h4 style="color: white; margin: 0;">Award Ceremony</h4>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="gallery-item fade-in-item" data-category="workshop">
+                        <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);"></div>
+                        <div class="gallery-overlay">
+                            <div class="gallery-info">
+                                <span class="gallery-category">Workshop</span>
+                                <h4 style="color: white; margin: 0;">Design Sprint</h4>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="gallery-item fade-in-item" data-category="celebration">
+                        <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);"></div>
+                        <div class="gallery-overlay">
+                            <div class="gallery-info">
+                                <span class="gallery-category">Celebration</span>
+                                <h4 style="color: white; margin: 0;">Project Launch Party</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gallery Modal -->
+        <div id="gallery-modal" class="gallery-modal">
+            <div class="gallery-modal-content">
+                <div class="gallery-modal-header">
+                    <h3 style="margin: 0; color: var(--text-dark);" id="gallery-modal-title">Gallery</h3>
+                    <span class="close-gallery">&times;</span>
+                </div>
+                <div class="gallery-modal-body">
+                    <img src="" alt="" class="gallery-modal-image" id="gallery-modal-image">
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA Section -->
+        <section class="section__container" style="text-align: center; padding: 4rem 0;">
+            <h2 class="section__header">Join Our Winning Team</h2>
+            <p class="section__subtitle" style="max-width: 600px; margin: 0 auto 3rem;">
+                Are you passionate about digital innovation? Explore career opportunities 
+                and become part of our talented team
+            </p>
+            <div style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap;">
+                <a href="#" class="btn pulse-animation">
+                    <i class="ri-briefcase-line"></i> View Open Positions
+                </a>
+                <a href="index.html#contact" class="btn" style="background: var(--extra-light); color: var(--text-dark);">
+                    <i class="ri-mail-line"></i> Contact HR
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="section__container footer__container">
+            <div class="footer__col">
+                <div class="footer__logo">
+                    <a href="index.html" class="logo-link">
+                        <i class="ri-code-s-slash-line"></i>
+                        <div class="logo-text">
+                            <span class="logo-primary">Shohoj IT</span>
+                            <span class="logo-secondary">Agency</span>
+                        </div>
+                    </a>
+                </div>
+                <p class="section__description">
+                    Shohoj IT Agency is a creative digital agency dedicated to delivering
+                    innovative solutions that help businesses thrive in the digital world.
+                </p>
+                <h3>Follow Us</h3>
+                <ul class="footer__socials">
+                    <li>
+                        <a href="#" class="social-link"><i class="ri-facebook-fill"></i></a>
+                    </li>
+                    <li>
+                        <a href="#" class="social-link"><i class="ri-twitter-fill"></i></a>
+                    </li>
+                    <li>
+                        <a href="#" class="social-link"><i class="ri-instagram-line"></i></a>
+                    </li>
+                    <li>
+                        <a href="#" class="social-link"><i class="ri-behance-fill"></i></a>
+                    </li>
+                    <li>
+                        <a href="#" class="social-link"><i class="ri-dribbble-fill"></i></a>
+                    </li>
+                </ul>
+            </div>
+            <div class="footer__col">
+                <h4>Quick Links</h4>
+                <ul class="footer__links">
+                    <li><a href="about.html">About Agency</a></li>
+                    <li><a href="#">Latest News & Blogs</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="index.html#home">Our Services</a></li>
+                    <li><a href="#">Career Opportunities</a></li>
+                    <li><a href="courses.html">Our Courses</a></li>
+                </ul>
+            </div>
+            <div class="footer__col">
+                <h4>Support</h4>
+                <ul class="footer__links">
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">FAQs</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Report an Issue</a></li>
+                    <li><a href="#">Get a Quote</a></li>
+                    <li><a href="#contact">Contact Support</a></li>
+                </ul>
+            </div>
+            <div class="footer__col">
+                <h4>Contact Us</h4>
+                <ul class="footer__links">
+                    <li>
+                        <a href="tel:+8801234567890">
+                            <span><i class="ri-phone-fill"></i></span> +880 1234 567890
+                        </a>
+                    </li>
+                    <li>
+                        <a href="mailto:info@shohojit.com">
+                            <span><i class="ri-mail-fill"></i></span> info@shohojit.com
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://maps.google.com" target="_blank">
+                            <span><i class="ri-map-pin-2-fill"></i></span> Manikganj, Dhaka, Bangladesh
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="newsletter-link">
+                            <span><i class="ri-mail-send-line"></i></span> Subscribe to Newsletter
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer__bar">
+            <div class="footer__bar-content">
+                <div>Copyright © 2025 Shohoj IT Agency. All rights reserved.</div>
+                <div class="footer__bar-links">
+                    <a href="#">Privacy Policy</a> | 
+                    <a href="#">Terms of Service</a> | 
+                    <a href="#">Cookie Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Elements -->
+    <div class="floating-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+        <div class="shape shape-4"></div>
+    </div>
+
+    <!-- WhatsApp Icon -->
+    <a href="https://wa.me/1234567890" class="whatsapp-float" target="_blank" rel="noopener noreferrer">
+        <i class="ri-whatsapp-line"></i>
+    </a>
+
+    <!-- Back to Top -->
+    <a href="#" class="back-to-top" id="back-to-top">
+        <i class="ri-arrow-up-line"></i>
+    </a>
+
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="modal-header">
+                <i class="ri-user-3-line modal-icon"></i>
+                <h2 class="modal-title">Welcome Back!</h2>
+                <p>Choose an option to continue</p>
+            </div>
+            <div class="modal-body">
+                <!-- Same modal content as index.html -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Account Modal -->
+    <div id="mobile-account-modal" class="modal mobile-account-modal">
+        <div class="modal-content">
+            <span class="close-mobile-account">&times;</span>
+            <div class="modal-header">
+                <i class="ri-user-3-line modal-icon"></i>
+                <h2>Account Options</h2>
+                <p>Choose what you want to do</p>
+            </div>
+            <div class="modal-body">
+                <!-- Same content as index.html -->
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/scrollreveal"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="main.js"></script>
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+    // --- 1. Counter animation ---
+    function animateCounters() {
+        document.querySelectorAll('.counter').forEach(counter => {
+            const target = parseInt(counter.getAttribute('data-count')) || 0;
+            let current = 0;
+            const duration = 1800;
+            const increment = target / (duration / 16);
+
+            counter.textContent = '0';
+
+            function update() {
+                current += increment;
+                if (current < target) {
+                    counter.textContent = Math.floor(current);
+                    requestAnimationFrame(update);
+                } else {
+                    counter.textContent = target;
+                }
+            }
+            update();
+        });
+    }
+
+    // --- 2. Tab switching (the critical part) ---
+    const tabs = document.querySelectorAll('.tab-btn');
+    const sections = document.querySelectorAll('.team-section');
+
+    function activateTab(teamKey) {
+        // Deactivate all tabs & sections
+        tabs.forEach(t => t.classList.remove('active'));
+        sections.forEach(s => s.classList.remove('active'));
+
+        // Activate selected tab
+        const selectedTab = document.querySelector(`.tab-btn[data-team="${teamKey}"]`);
+        if (selectedTab) selectedTab.classList.add('active');
+
+        // Activate corresponding section
+        const targetSection = document.getElementById(`${teamKey}-team`);
+        if (targetSection) {
+            targetSection.classList.add('active');
+            // Optional: smooth scroll to the section
+            targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
+            console.warn(`Section not found: #${teamKey}-team`);
+        }
+    }
+
+    // Attach click handlers to tabs
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const teamType = tab.getAttribute('data-team');
+            if (teamType) {
+                activateTab(teamType);
+            }
+        });
+    });
+
+    // --- 3. Initialize ---
+    // Make sure Leadership is active by default (should already have .active class)
+    const defaultTab = document.querySelector('.tab-btn.active');
+    if (defaultTab) {
+        const initialTeam = defaultTab.getAttribute('data-team');
+        if (initialTeam) activateTab(initialTeam);
+    }
+
+    setTimeout(animateCounters, 600);
+
+    // Optional: re-run scroll animations if you use them
+    if (typeof ScrollReveal !== 'undefined') {
+        ScrollReveal().sync();
+    }
+});
+</script>
+</body>
+</html>

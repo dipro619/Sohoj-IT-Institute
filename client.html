@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Clients | Shohoj IT Agency</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚀</text></svg>">
+    <style>
+        /* Clients Page Styles */
+        .clients-hero {
+            padding-top: 10rem;
+            padding-bottom: 6rem;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(var(--primary-color-rgb), 0.1) 0%, rgba(255, 94, 98, 0.1) 100%);
+            border-radius: var(--border-radius-lg);
+            margin-bottom: 4rem;
+        }
+        
+        .stats-banner {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #ff5e62 100%);
+            border-radius: var(--border-radius-lg);
+            padding: 4rem 2rem;
+            margin: 4rem 0;
+            color: var(--white);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            text-align: center;
+        }
+        
+        .stats-number {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            display: block;
+            min-height: 70px;
+            line-height: 70px;
+            color: black;
+        }
+        
+        .stats-label {
+            font-size: 1rem;
+            font-weight: 500;
+            opacity: 0.9;
+        }
+        
+        .client-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 4rem 0;
+        }
+        
+        .client-card {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            padding: 2.5rem;
+            text-align: center;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--extra-light);
+        }
+        
+        .client-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .client-logo {
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .client-logo img {
+            max-width: 150px;
+            max-height: 60px;
+            object-fit: contain;
+            filter: grayscale(100%);
+            transition: var(--transition);
+        }
+        
+        .client-card:hover .client-logo img {
+            filter: grayscale(0%);
+            transform: scale(1.1);
+        }
+        
+        .client-industry {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: rgba(var(--primary-color-rgb), 0.1);
+            color: var(--primary-color);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .client-description {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .testimonial-highlight {
+            background: var(--extra-light);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            margin-top: 1.5rem;
+            border-left: 4px solid var(--primary-color);
+            font-style: italic;
+            text-align: left;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+        
+        .testimonial-author img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .testimonial-author h4 {
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            margin: 0;
+        }
+        
+        .testimonial-author p {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin: 0;
+        }
+        
+        .client-categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin: 2rem 0 3rem;
+        }
+        
+        .category-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--white);
+            border: 2px solid var(--extra-light);
+            border-radius: 50px;
+            font-weight: 600;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .category-btn.active,
+        .category-btn:hover {
+            background: var(--primary-color);
+            color: var(--white);
+            border-color: var(--primary-color);
+            transform: translateY(-3px);
+        }
+        
+        .client-showcase {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+            margin: 4rem 0;
+        }
+        
+        .showcase-card {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        
+        .showcase-card:hover {
+            transform: translateY(-15px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .showcase-image {
+            height: 200px;
+            overflow: hidden;
+        }
+        
+        .showcase-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+        
+        .showcase-card:hover .showcase-image img {
+            transform: scale(1.1);
+        }
+        
+        .showcase-content {
+            padding: 2rem;
+        }
+        
+        .showcase-category {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: rgba(var(--primary-color-rgb), 0.1);
+            color: var(--primary-color);
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .showcase-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+        
+        .showcase-results {
+            background: var(--extra-light);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        
+        .result-item {
+            text-align: center;
+        }
+        
+        .result-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            line-height: 1;
+            margin-bottom: 0.25rem;
+        }
+        
+        .result-label {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            font-weight: 600;
+        }
+        
+        .trust-badges {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        
+        .trust-badge {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            max-width: 150px;
+        }
+        
+        .badge-icon {
+            width: 70px;
+            height: 70px;
+            background: rgba(var(--primary-color-rgb), 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            transition: var(--transition);
+        }
+        
+        .trust-badge:hover .badge-icon {
+            background: var(--primary-color);
+            color: var(--white);
+            transform: scale(1.1);
+        }
+        
+        .badge-text {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        
+        .partners-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 2rem;
+            margin: 4rem 0;
+            align-items: center;
+        }
+        
+        .partner-logo {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100px;
+            transition: var(--transition);
+            border: 1px solid var(--extra-light);
+        }
+        
+        .partner-logo:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+        }
+        
+        .partner-logo img {
+            max-width: 120px;
+            max-height: 50px;
+            object-fit: contain;
+            filter: grayscale(100%);
+            opacity: 0.7;
+            transition: var(--transition);
+        }
+        
+        .partner-logo:hover img {
+            filter: grayscale(0%);
+            opacity: 1;
+        }
+        
+        @media (max-width: 768px) {
+            .stats-number {
+                font-size: 2.5rem;
+                min-height: 60px;
+                line-height: 60px;
+            }
+            
+            .client-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .client-showcase {
+                grid-template-columns: 1fr;
+            }
+            
+            .client-categories {
+                overflow-x: auto;
+                justify-content: flex-start;
+                padding-bottom: 1rem;
+            }
+            
+            .category-btn {
+                white-space: nowrap;
+            }
+            
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .partners-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .trust-badges {
+                gap: 1.5rem;
+            }
+            
+            .trust-badge {
+                max-width: 120px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .partner-logo {
+                padding: 1rem;
+                height: 80px;
+            }
+            
+            .partner-logo img {
+                max-width: 100px;
+            }
+            
+            .trust-badges {
+                gap: 1rem;
+            }
+            
+            .trust-badge {
+                max-width: 100px;
+            }
+            
+            .badge-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 1.75rem;
+            }
+        }
+        
+        /* Animation Classes */
+        .fade-in-item {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .fade-in-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .hover-float:hover {
+            animation: hoverFloat 0.6s ease;
+        }
+        
+        @keyframes hoverFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loading-screen">
+        <div class="loader">
+            <div class="loader-circle"></div>
+            <div class="loader-text">Loading<span class="loader-dots">...</span></div>
+        </div>
+    </div>
+
+    <!-- Desktop Navigation -->
+    <nav>
+        <div class="nav__header">
+            <div class="nav__logo">
+                <a href="index.html" class="logo-link">
+                    <i class="ri-code-s-slash-line"></i>
+                    <div class="logo-text">
+                        <span class="logo-primary">Shohoj IT</span>
+                        <span class="logo-secondary">Agency</span>
+                    </div>
+                </a>
+            </div>
+            <ul class="nav__links" id="nav-links">
+                <li><a href="index.html" class="nav-link"><i class="ri-home-4-line"></i> Home</a></li>
+                <li><a href="about.html" class="nav-link"><i class="ri-information-line"></i> About</a></li>
+                <li><a href="portfolio.html" class="nav-link"><i class="ri-briefcase-line"></i> Portfolio</a></li>
+                <li><a href="client.html" class="nav-link active"><i class="ri-user-line"></i> Clients</a></li>
+                <li><a href="index.html#contact" class="nav-link"><i class="ri-contacts-line"></i> Contact</a></li>
+                <li><a href="courses.html" class="nav-link"><i class="ri-book-line"></i> Courses</a></li>
+            </ul>
+            <div class="nav__btns">
+                <button id="dark-mode-toggle-desktop" class="theme-toggle" aria-label="Toggle dark mode">
+                    <i class="ri-moon-line"></i>
+                </button>
+                <button class="btn sign-up-btn pulse-animation">
+                    <i class="ri-user-line"></i> Sign In / Sign Up
+                </button>
+            </div>
+            <div class="nav__menu__btn" id="menu-btn">
+                <i class="ri-menu-line"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Bottom Navigation -->
+    <!-- Mobile Bottom Navigation -->
+<div class="mobile-nav" id="mobile-nav">
+    <ul class="mobile-nav__links">
+        <li>
+            <a href="index.html" class="mobile-nav__item active" data-tooltip="Home">
+                <i class="ri-home-4-line mobile-nav__icon"></i>
+                <span class="mobile-nav__label">Home</span>
+            </a>
+        </li>
+        <li>
+            <a href="about.html" class="mobile-nav__item" data-tooltip="About">
+                <i class="ri-information-line mobile-nav__icon"></i>
+                <span class="mobile-nav__label">About</span>
+            </a>
+        </li>
+        <li>
+            <a href="portfolio.html" class="mobile-nav__item" data-tooltip="Portfolio">
+                <i class="ri-briefcase-line mobile-nav__icon"></i>
+                <span class="mobile-nav__label">Portfolio</span>
+            </a>
+        </li>
+        <li>
+            <a href="client.html" class="mobile-nav__item" data-tooltip="Clients">
+                <i class="ri-user-line mobile-nav__icon"></i>
+                <span class="mobile-nav__label">Clients</span>
+            </a>
+        </li>
+        <li>
+            <a href="#contact" class="mobile-nav__item" data-tooltip="Contact">
+                <i class="ri-contacts-line mobile-nav__icon"></i>
+                <span class="mobile-nav__label">Contact</span>
+            </a>
+        </li>
+        <li>
+            <a href="courses.html" class="mobile-nav__item" data-tooltip="Courses">
+                <i class="ri-book-line mobile-nav__icon"></i>
+                <span class="mobile-nav__label">Courses</span>
+            </a>
+        </li>
+        <li>
+            <button class="mobile-nav__item" id="mobile-signup-nav" data-tooltip="Sign In / Up">
+                <i class="ri-user-add-line mobile-nav__icon"></i>
+                <span class="mobile-nav__label">Account</span>
+            </button>
+        </li>
+    </ul>
+</div>
+
+    <!-- Main Content -->
+    <main class="section__container">
+        <!-- Hero Section -->
+        <section class="clients-hero">
+            <div class="section__container">
+                <div class="tagline animate-fade-in">🤝 Trusted Partnerships</div>
+                <h1 class="section__header animate-typing">
+                    Our Valued Clients
+                </h1>
+                <p class="section__subtitle animate-slide-up">
+                    We've had the privilege of working with amazing businesses across industries. 
+                    Discover how we've helped them achieve digital excellence and drive growth.
+                </p>
+            </div>
+        </section>
+
+        <!-- Stats Banner -->
+        <section class="stats-banner">
+            <div class="section__container">
+                <h2 class="section__header" style="color: var(--white); -webkit-text-fill-color: var(--white); margin-bottom: 3rem; text-align: center;">
+                    Client Success By Numbers
+                </h2>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stats-number counter" data-count="98">0</div>
+                        <div class="stats-label">Happy Clients</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stats-number counter" data-count="45">0</div>
+                        <div class="stats-label">Industries Served</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stats-number counter" data-count="92">0</div>
+                        <div class="stats-label">Retention Rate</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stats-number counter" data-count="250">0</div>
+                        <div class="stats-label">Projects Completed</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Client Categories -->
+        <section class="section__container">
+            <h2 class="section__header">Clients Across Industries</h2>
+            <p class="section__subtitle">We serve diverse sectors with customized digital solutions</p>
+            
+            <div class="client-grid">
+                <!-- Tech Client 1 -->
+                <div class="client-card hover-float" data-category="tech">
+                    <div class="client-logo">
+                        <!-- Placeholder logo - In production, use actual client logos -->
+                        <div style="width: 150px; height: 60px; background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.5rem;">TECHNOVA</div>
+                    </div>
+                    <div class="client-industry">Technology</div>
+                    <h4>TechNova Solutions</h4>
+                    <p class="client-description">
+                        A leading SaaS provider that needed a complete platform redesign and 
+                        performance optimization for their enterprise software.
+                    </p>
+                    <div class="testimonial-highlight">
+                        <p>"Shohoj IT transformed our platform's user experience, resulting in a 45% increase in user engagement."</p>
+                        <div class="testimonial-author">
+                            <!-- Placeholder image -->
+                            <div style="width: 40px; height: 40px; background: #3b82f6; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">JC</div>
+                            <div>
+                                <h4>James Carter</h4>
+                                <p>CEO, TechNova</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- E-commerce Client -->
+                <div class="client-card hover-float" data-category="ecommerce">
+                    <div class="client-logo">
+                        <div style="width: 150px; height: 60px; background: linear-gradient(135deg, #10b981 0%, #047857 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.5rem;">GREENLY</div>
+                    </div>
+                    <div class="client-industry">E-commerce</div>
+                    <h4>Greenly Organics</h4>
+                    <p class="client-description">
+                        An eco-friendly e-commerce store seeking to improve conversions 
+                        through better UX and mobile optimization.
+                    </p>
+                    <div class="testimonial-highlight">
+                        <p>"Our mobile conversions increased by 65% after their redesign. Highly recommend!"</p>
+                        <div class="testimonial-author">
+                            <div style="width: 40px; height: 40px; background: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">SM</div>
+                            <div>
+                                <h4>Sarah Mitchell</h4>
+                                <p>Marketing Director</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Finance Client -->
+                <div class="client-card hover-float" data-category="finance">
+                    <div class="client-logo">
+                        <div style="width: 150px; height: 60px; background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.5rem;">URBANBANK</div>
+                    </div>
+                    <div class="client-industry">Finance</div>
+                    <h4>Urban Finance</h4>
+                    <p class="client-description">
+                        A digital bank needing a secure, user-friendly mobile banking app 
+                        with advanced financial tracking features.
+                    </p>
+                    <div class="testimonial-highlight">
+                        <p>"The security features and UX design exceeded our expectations. Customer satisfaction soared."</p>
+                        <div class="testimonial-author">
+                            <div style="width: 40px; height: 40px; background: #8b5cf6; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">DK</div>
+                            <div>
+                                <h4>David Kim</h4>
+                                <p>CTO</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Healthcare Client -->
+                <div class="client-card hover-float" data-category="healthcare">
+                    <div class="client-logo">
+                        <div style="width: 150px; height: 60px; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.5rem;">MEDIWELL</div>
+                    </div>
+                    <div class="client-industry">Healthcare</div>
+                    <h4>MediWell Clinics</h4>
+                    <p class="client-description">
+                        Healthcare provider requiring a HIPAA-compliant patient portal 
+                        with telemedicine capabilities and appointment scheduling.
+                    </p>
+                    <div class="testimonial-highlight">
+                        <p>"Their understanding of healthcare compliance combined with great UX made this project a success."</p>
+                        <div class="testimonial-author">
+                            <div style="width: 40px; height: 40px; background: #ef4444; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">AR</div>
+                            <div>
+                                <h4>Dr. Anita Roy</h4>
+                                <p>Medical Director</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Education Client -->
+                <div class="client-card hover-float" data-category="education">
+                    <div class="client-logo">
+                        <div style="width: 150px; height: 60px; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.5rem;">LEARNLY</div>
+                    </div>
+                    <div class="client-industry">Education</div>
+                    <h4>Learnly Academy</h4>
+                    <p class="client-description">
+                        Online education platform needing a scalable LMS with interactive 
+                        features and progress tracking for students.
+                    </p>
+                    <div class="testimonial-highlight">
+                        <p>"Student engagement doubled after launching the new platform. The results speak for themselves."</p>
+                        <div class="testimonial-author">
+                            <div style="width: 40px; height: 40px; background: #f59e0b; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">MW</div>
+                            <div>
+                                <h4>Michael Wilson</h4>
+                                <p>Academic Dean</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Startup Client -->
+                <div class="client-card hover-float" data-category="startup">
+                    <div class="client-logo">
+                        <div style="width: 150px; height: 60px; background: linear-gradient(135deg, #ec4899 0%, #db2777 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.5rem;">GROWTHLY</div>
+                    </div>
+                    <div class="client-industry">Startup</div>
+                    <h4>Growthly Startups</h4>
+                    <p class="client-description">
+                        A startup accelerator needing MVP development and investor 
+                        dashboard for their portfolio companies.
+                    </p>
+                    <div class="testimonial-highlight">
+                        <p>"They understood our startup mentality and delivered fast. Perfect partner for growth-stage companies."</p>
+                        <div class="testimonial-author">
+                            <div style="width: 40px; height: 40px; background: #ec4899; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">EL</div>
+                            <div>
+                                <h4>Emma Lee</h4>
+                                <p>Founder & CEO</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Success Showcase -->
+        <section class="section__container" style="background: var(--extra-light); border-radius: var(--border-radius-lg); padding: 4rem 2rem;">
+            <h2 class="section__header">Success Stories</h2>
+            <p class="section__subtitle">Detailed case studies of client transformations</p>
+            
+            <div class="client-showcase">
+                <div class="showcase-card hover-float">
+                    <div class="showcase-image">
+                        <!-- Placeholder image -->
+                        <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.5rem;">E-COMMERCE REDESIGN</div>
+                    </div>
+                    <div class="showcase-content">
+                        <span class="showcase-category">E-commerce</span>
+                        <h3 class="showcase-title">FashionForward Retail</h3>
+                        <p class="client-description">
+                            Complete e-commerce platform redesign with improved checkout flow, 
+                            mobile optimization, and integrated inventory management.
+                        </p>
+                        
+                        <div class="showcase-results">
+                            <h4 style="margin-bottom: 1rem; color: var(--text-dark);">Results Achieved</h4>
+                            <div class="results-grid">
+                                <div class="result-item">
+                                    <div class="result-number counter" data-count="68">0%</div>
+                                    <div class="result-label">Mobile Sales Increase</div>
+                                </div>
+                                <div class="result-item">
+                                    <div class="result-number counter" data-count="42">0%</div>
+                                    <div class="result-label">Cart Abandonment Reduction</div>
+                                </div>
+                                <div class="result-item">
+                                    <div class="result-number counter" data-count="55">0%</div>
+                                    <div class="result-label">Conversion Rate Boost</div>
+                                </div>
+                                <div class="result-item">
+                                    <div class="result-number counter" data-count="3">0.2s</div>
+                                    <div class="result-label">Faster Page Load</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="showcase-card hover-float">
+                    <div class="showcase-image">
+                        <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #10b981 0%, #047857 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.5rem;">SAAS PLATFORM</div>
+                    </div>
+                    <div class="showcase-content">
+                        <span class="showcase-category">Technology</span>
+                        <h3 class="showcase-title">CloudFlow Analytics</h3>
+                        <p class="client-description">
+                            Enterprise SaaS platform development with real-time analytics, 
+                            custom reporting, and team collaboration features.
+                        </p>
+                        
+                        <div class="showcase-results">
+                            <h4 style="margin-bottom: 1rem; color: var(--text-dark);">Results Achieved</h4>
+                            <div class="results-grid">
+                                <div class="result-item">
+                                    <div class="result-number counter" data-count="300">0%</div>
+                                    <div class="result-label">Scalability Improvement</div>
+                                </div>
+                                <div class="result-item">
+                                    <div class="result-number counter" data-count="78">0%</div>
+                                    <div class="result-label">User Satisfaction</div>
+                                </div>
+                                <div class="result-item">
+                                    <div class="result-number counter" data-count="45">0%</div>
+                                    <div class="result-label">Reduced Server Costs</div>
+                                </div>
+                                <div class="result-item">
+                                    <div class="result-number counter" data-count="99">0.9%</div>
+                                    <div class="result-label">Platform Uptime</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Trust Badges -->
+        <section class="section__container">
+            <h2 class="section__header">Why Clients Trust Us</h2>
+            <p class="section__subtitle">Our commitment to excellence in every partnership</p>
+            
+            <div class="trust-badges">
+                <div class="trust-badge">
+                    <div class="badge-icon"><i class="ri-shield-check-line"></i></div>
+                    <div class="badge-text">Secure & Reliable</div>
+                </div>
+                <div class="trust-badge">
+                    <div class="badge-icon"><i class="ri-time-line"></i></div>
+                    <div class="badge-text">On-Time Delivery</div>
+                </div>
+                <div class="trust-badge">
+                    <div class="badge-icon"><i class="ri-customer-service-2-line"></i></div>
+                    <div class="badge-text">24/7 Support</div>
+                </div>
+                <div class="trust-badge">
+                    <div class="badge-icon"><i class="ri-line-chart-line"></i></div>
+                    <div class="badge-text">Proven Results</div>
+                </div>
+                <div class="trust-badge">
+                    <div class="badge-icon"><i class="ri-team-line"></i></div>
+                    <div class="badge-text">Dedicated Team</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Partners & Certifications -->
+        <section class="section__container">
+            <h2 class="section__header">Our Partners & Certifications</h2>
+            <p class="section__subtitle">We work with leading platforms and maintain industry certifications</p>
+            
+            <div class="partners-grid">
+                <div class="partner-logo">
+                    <!-- Placeholder for partner logos -->
+                    <div style="font-weight: bold; color: var(--text-dark);">AWS</div>
+                </div>
+                <div class="partner-logo">
+                    <div style="font-weight: bold; color: var(--text-dark);">Google Cloud</div>
+                </div>
+                <div class="partner-logo">
+                    <div style="font-weight: bold; color: var(--text-dark);">Microsoft</div>
+                </div>
+                <div class="partner-logo">
+                    <div style="font-weight: bold; color: var(--text-dark);">Adobe</div>
+                </div>
+                <div class="partner-logo">
+                    <div style="font-weight: bold; color: var(--text-dark);">Shopify</div>
+                </div>
+                <div class="partner-logo">
+                    <div style="font-weight: bold; color: var(--text-dark);">WordPress</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="section__container" style="text-align: center; padding: 4rem 0;">
+            <h2 class="section__header">Ready to Become Our Next Success Story?</h2>
+            <p class="section__subtitle" style="max-width: 600px; margin: 0 auto 3rem;">
+                Join our growing list of satisfied clients and transform your digital presence today
+            </p>
+            <div style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap;">
+                <a href="index.html#contact" class="btn pulse-animation">
+                    <i class="ri-calendar-line"></i> Schedule a Consultation
+                </a>
+                <a href="index.html#client" class="btn" style="background: var(--extra-light); color: var(--text-dark);">
+                    <i class="ri-chat-3-line"></i> View More Testimonials
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="section__container footer__container">
+            <div class="footer__col">
+                <div class="footer__logo">
+                    <a href="index.html" class="logo-link">
+                        <i class="ri-code-s-slash-line"></i>
+                        <div class="logo-text">
+                            <span class="logo-primary">Shohoj IT</span>
+                            <span class="logo-secondary">Agency</span>
+                        </div>
+                    </a>
+                </div>
+                <p class="section__description">
+                    Shohoj IT Agency is a creative digital agency dedicated to delivering
+                    innovative solutions that help businesses thrive in the digital world.
+                </p>
+                <h3>Follow Us</h3>
+                <ul class="footer__socials">
+                    <li>
+                        <a href="#" class="social-link"><i class="ri-facebook-fill"></i></a>
+                    </li>
+                    <li>
+                        <a href="#" class="social-link"><i class="ri-twitter-fill"></i></a>
+                    </li>
+                    <li>
+                        <a href="#" class="social-link"><i class="ri-instagram-line"></i></a>
+                    </li>
+                    <li>
+                        <a href="#" class="social-link"><i class="ri-behance-fill"></i></a>
+                    </li>
+                    <li>
+                        <a href="#" class="social-link"><i class="ri-dribbble-fill"></i></a>
+                    </li>
+                </ul>
+            </div>
+            <div class="footer__col">
+                <h4>Quick Links</h4>
+                <ul class="footer__links">
+                    <li><a href="about.html">About Agency</a></li>
+                    <li><a href="#">Latest News & Blogs</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="index.html#home">Our Services</a></li>
+                    <li><a href="#">Career Opportunities</a></li>
+                    <li><a href="courses.html">Our Courses</a></li>
+                </ul>
+            </div>
+            <div class="footer__col">
+                <h4>Support</h4>
+                <ul class="footer__links">
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">FAQs</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Report an Issue</a></li>
+                    <li><a href="#">Get a Quote</a></li>
+                    <li><a href="#contact">Contact Support</a></li>
+                </ul>
+            </div>
+            <div class="footer__col">
+                <h4>Contact Us</h4>
+                <ul class="footer__links">
+                    <li>
+                        <a href="tel:+8801234567890">
+                            <span><i class="ri-phone-fill"></i></span> +880 1234 567890
+                        </a>
+                    </li>
+                    <li>
+                        <a href="mailto:info@shohojit.com">
+                            <span><i class="ri-mail-fill"></i></span> info@shohojit.com
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://maps.google.com" target="_blank">
+                            <span><i class="ri-map-pin-2-fill"></i></span> Manikganj, Dhaka, Bangladesh
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="newsletter-link">
+                            <span><i class="ri-mail-send-line"></i></span> Subscribe to Newsletter
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer__bar">
+            <div class="footer__bar-content">
+                <div>Copyright © 2025 Shohoj IT Agency. All rights reserved.</div>
+                <div class="footer__bar-links">
+                    <a href="#">Privacy Policy</a> | 
+                    <a href="#">Terms of Service</a> | 
+                    <a href="#">Cookie Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Elements -->
+    <div class="floating-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+        <div class="shape shape-4"></div>
+    </div>
+
+    <!-- WhatsApp Icon -->
+    <a href="https://wa.me/1234567890" class="whatsapp-float" target="_blank" rel="noopener noreferrer">
+        <i class="ri-whatsapp-line"></i>
+    </a>
+
+    <!-- Back to Top -->
+    <a href="#" class="back-to-top" id="back-to-top">
+        <i class="ri-arrow-up-line"></i>
+    </a>
+
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="modal-header">
+                <i class="ri-user-3-line modal-icon"></i>
+                <h2 class="modal-title">Welcome Back!</h2>
+                <p>Choose an option to continue</p>
+            </div>
+            <div class="modal-body">
+                <!-- Same modal content as index.html -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Account Modal -->
+    <div id="mobile-account-modal" class="modal mobile-account-modal">
+        <div class="modal-content">
+            <span class="close-mobile-account">&times;</span>
+            <div class="modal-header">
+                <i class="ri-user-3-line modal-icon"></i>
+                <h2>Account Options</h2>
+                <p>Choose what you want to do</p>
+            </div>
+            <div class="modal-body">
+                <!-- Same content as index.html -->
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/scrollreveal"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="main.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Initialize counters
+            function animateCounters() {
+                const counters = document.querySelectorAll('.counter');
+                
+                counters.forEach(counter => {
+                    const target = parseInt(counter.getAttribute('data-count')) || 0;
+                    let current = 0;
+                    const duration = 1500;
+                    const increment = target / (duration / 16);
+                    
+                    // Reset to 0
+                    counter.textContent = '0';
+                    
+                    function updateCounter() {
+                        current += increment;
+                        if (current < target) {
+                            counter.textContent = Math.floor(current);
+                            requestAnimationFrame(updateCounter);
+                        } else {
+                            counter.textContent = target;
+                        }
+                    }
+                    
+                    // Start animation
+                    updateCounter();
+                });
+            }
+            
+            // Scroll animations
+            function initScrollAnimations() {
+                const fadeInItems = document.querySelectorAll('.fade-in-item');
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.1 });
+                
+                fadeInItems.forEach(item => observer.observe(item));
+            }
+            
+            // Client category filtering
+            const categoryBtns = document.querySelectorAll('.category-btn');
+            const clientCards = document.querySelectorAll('.client-card');
+            
+            categoryBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Update active button
+                    categoryBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const category = this.getAttribute('data-category');
+                    
+                    // Filter client cards
+                    clientCards.forEach(card => {
+                        if (category === 'all' || card.getAttribute('data-category') === category) {
+                            card.style.display = 'block';
+                            setTimeout(() => {
+                                card.style.opacity = '1';
+                                card.style.transform = 'translateY(0)';
+                            }, 100);
+                        } else {
+                            card.style.opacity = '0';
+                            card.style.transform = 'translateY(20px)';
+                            setTimeout(() => {
+                                card.style.display = 'none';
+                            }, 300);
+                        }
+                    });
+                });
+            });
+            
+            // Update navigation active state
+            function updateNavigation() {
+                const currentPage = window.location.pathname.split('/').pop();
+                
+                // Desktop navigation
+                const desktopLinks = document.querySelectorAll('.nav-link');
+                desktopLinks.forEach(link => {
+                    link.classList.remove('active');
+                    const href = link.getAttribute('href');
+                    
+                    if (currentPage === 'client.html' && href === 'client.html') {
+                        link.classList.add('active');
+                    }
+                });
+                
+                // Mobile navigation
+                const mobileLinks = document.querySelectorAll('.mobile-nav__item[href]');
+                mobileLinks.forEach(link => {
+                    link.classList.remove('active');
+                    const href = link.getAttribute('href');
+                    
+                    if (currentPage === 'client.html' && href === 'client.html') {
+                        link.classList.add('active');
+                    }
+                });
+            }
+            
+            // Initialize everything
+            updateNavigation();
+            initScrollAnimations();
+            
+            // Start counters after a short delay
+            setTimeout(animateCounters, 500);
+            
+            // Initialize ScrollReveal animations
+            if (typeof ScrollReveal !== 'undefined') {
+                const sr = ScrollReveal({
+                    distance: '50px',
+                    duration: 1000,
+                    easing: 'cubic-bezier(0.5, 0, 0, 1)',
+                    interval: 200
+                });
+                
+                sr.reveal('.client-card', { interval: 200 });
+                sr.reveal('.showcase-card', { interval: 200 });
+                sr.reveal('.trust-badge', { interval: 200 });
+                sr.reveal('.partner-logo', { interval: 100 });
+            }
+        });
+    </script>
+</body>
+</html>
