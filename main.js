@@ -5,28 +5,13 @@ const menuBtnIcon = menuBtn?.querySelector("i");
 const mobileNav = document.getElementById("mobile-nav");
 const mobileNavItems = document.querySelectorAll(".mobile-nav__item");
 const darkModeToggles = document.querySelectorAll(".theme-toggle");
-const signUpBtns = document.querySelectorAll(".sign-up-btn, #mobile-signup-nav, #floating-mobile-signup");
+const signUpBtns = document.querySelectorAll(".sign-up-btn, #mobile-signup-nav");
 const modal = document.getElementById("auth-modal");
 const mobileAccountModal = document.getElementById("mobile-account-modal");
 const closeModal = document.querySelector(".close");
 const closeMobileAccountModal = document.querySelector(".close-mobile-account");
 const loadingScreen = document.getElementById("loading-screen");
 const backToTop = document.getElementById("back-to-top");
-
-// Authentication Configuration
-const authConfig = {
-  google: {
-    clientId: "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com",
-    scope: "email profile"
-  },
-  facebook: {
-    appId: "YOUR_FACEBOOK_APP_ID",
-    version: "v18.0"
-  },
-  twitter: {
-    clientId: "YOUR_TWITTER_CLIENT_ID"
-  }
-};
 
 // User state
 let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
@@ -146,11 +131,6 @@ function initTheme() {
       }, 500);
       
       updateThemeIcons(isDark ? "ri-sun-line" : "ri-moon-line");
-      
-      // Add confetti effect on theme change
-      if (isDark) {
-        createConfetti();
-      }
     });
   });
   
@@ -179,198 +159,13 @@ function updateThemeIcons(iconClass) {
   });
 }
 
-// Confetti Effect
-function createConfetti() {
-  const colors = ["#ff8906", "#ff5e62", "#00d5be", "#c27aff", "#00bcff"];
-  const confettiCount = 100;
-  
-  for (let i = 0; i < confettiCount; i++) {
-    const confetti = document.createElement("div");
-    confetti.className = "confetti";
-    confetti.style.cssText = `
-      position: fixed;
-      width: 10px;
-      height: 10px;
-      background: ${colors[Math.floor(Math.random() * colors.length)]};
-      top: -20px;
-      left: ${Math.random() * 100}vw;
-      border-radius: ${Math.random() > 0.5 ? "50%" : "0"};
-      z-index: 9999;
-      pointer-events: none;
-    `;
-    
-    document.body.appendChild(confetti);
-    
-    // Animation
-    const animation = confetti.animate([
-      { 
-        transform: `translate(0, 0) rotate(0deg)`,
-        opacity: 1 
-      },
-      { 
-        transform: `translate(${Math.random() * 100 - 50}px, 100vh) rotate(${Math.random() * 360}deg)`,
-        opacity: 0 
-      }
-    ], {
-      duration: 1000 + Math.random() * 2000,
-      easing: "cubic-bezier(0.215, 0.61, 0.355, 1)"
-    });
-    
-    animation.onfinish = () => confetti.remove();
-  }
-}
-
 // Authentication Functions
 function initAuthentication() {
-  // Load Google Sign-In API
-  loadGoogleAPI();
-  
-  // Load Facebook SDK
-  loadFacebookSDK();
-  
-  // Load Twitter SDK
-  loadTwitterSDK();
-  
   // Check if user is already logged in
   checkAuthState();
   
   // Add login/logout button to desktop nav
   updateAuthButtons();
-}
-
-function loadGoogleAPI() {
-  const script = document.createElement('script');
-  script.src = 'https://accounts.google.com/gsi/client';
-  script.async = true;
-  script.defer = true;
-  document.head.appendChild(script);
-}
-
-function loadFacebookSDK() {
-  window.fbAsyncInit = function() {
-    FB.init({
-      appId: authConfig.facebook.appId,
-      cookie: true,
-      xfbml: true,
-      version: authConfig.facebook.version
-    });
-    
-    // Check login status
-    FB.getLoginStatus(function(response) {
-      if (response.status === 'connected') {
-        handleFacebookResponse(response);
-      }
-    });
-  };
-
-  (function(d, s, id) {
-    var js, fjs = d.getElementsByTagName(s)[0];
-    if (d.getElementById(id)) return;
-    js = d.createElement(s); js.id = id;
-    js.src = "https://connect.facebook.net/en_US/sdk.js";
-    fjs.parentNode.insertBefore(js, fjs);
-  }(document, 'script', 'facebook-jsscript'));
-}
-
-function loadTwitterSDK() {
-  const script = document.createElement('script');
-  script.src = 'https://platform.twitter.com/widgets.js';
-  script.async = true;
-  script.charset = 'utf-8';
-  document.head.appendChild(script);
-}
-
-// Google Sign-In Handler
-function handleGoogleSignIn() {
-  if (typeof google !== 'undefined' && google.accounts) {
-    const client = google.accounts.oauth2.initTokenClient({
-      client_id: authConfig.google.clientId,
-      scope: authConfig.google.scope,
-      callback: async (response) => {
-        if (response.access_token) {
-          try {
-            // Get user info from Google API
-            const userInfo = await fetchGoogleUserInfo(response.access_token);
-            userInfo.provider = 'google';
-            userInfo.accessToken = response.access_token;
-            handleLoginSuccess(userInfo);
-          } catch (error) {
-            console.error('Google login error:', error);
-            showNotification('Failed to login with Google', 'info');
-          }
-        }
-      }
-    });
-    client.requestAccessToken();
-  } else {
-    showNotification('Google sign-in is not available. Please try again.', 'info');
-  }
-}
-
-async function fetchGoogleUserInfo(accessToken) {
-  const response = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-    headers: {
-      'Authorization': `Bearer ${accessToken}`
-    }
-  });
-  return await response.json();
-}
-
-// Facebook Login Handler
-function handleFacebookLogin() {
-  if (typeof FB !== 'undefined') {
-    FB.login(function(response) {
-      if (response.authResponse) {
-        handleFacebookResponse(response);
-      }
-    }, { scope: 'email,public_profile' });
-  } else {
-    showNotification('Facebook sign-in is not available. Please try again.', 'info');
-  }
-}
-
-function handleFacebookResponse(response) {
-  if (response.status === 'connected') {
-    FB.api('/me', { fields: 'id,name,email,picture' }, function(userInfo) {
-      userInfo.provider = 'facebook';
-      userInfo.accessToken = response.authResponse.accessToken;
-      userInfo.picture = userInfo.picture?.data?.url || `https://graph.facebook.com/${userInfo.id}/picture?type=large`;
-      handleLoginSuccess(userInfo);
-    });
-  }
-}
-
-// Twitter Login Handler
-function handleTwitterLogin() {
-  // Twitter OAuth 2.0 Implementation
-  const twitterAuthUrl = `https://twitter.com/i/oauth2/authorize?response_type=code&client_id=${authConfig.twitter.clientId}&redirect_uri=${encodeURIComponent(window.location.origin)}&scope=tweet.read%20users.read%20follows.read&state=twitter_login&code_challenge=challenge&code_challenge_method=plain`;
-  
-  // Open Twitter auth in popup
-  const width = 600;
-  const height = 700;
-  const left = (window.innerWidth - width) / 2;
-  const top = (window.innerHeight - height) / 2;
-  
-  const popup = window.open(
-    twitterAuthUrl,
-    'twitter_auth',
-    `width=${width},height=${height},top=${top},left=${left}`
-  );
-  
-  if (!popup) {
-    showNotification('Please allow popups for Twitter login', 'info');
-    return;
-  }
-  
-  // Poll for popup closure
-  const checkPopup = setInterval(() => {
-    if (popup.closed) {
-      clearInterval(checkPopup);
-      // In a real implementation, you would exchange the code for a token via your backend
-      // For demo purposes, we'll show a message
-      showNotification('Twitter login would redirect to your backend for token exchange', 'info');
-    }
-  }, 500);
 }
 
 // Demo Login Handler
@@ -423,16 +218,6 @@ function handleLogout() {
   // Clear user data
   currentUser = null;
   localStorage.removeItem('currentUser');
-  
-  // Logout from Google
-  if (typeof google !== 'undefined' && google.accounts) {
-    google.accounts.id.disableAutoSelect();
-  }
-  
-  // Logout from Facebook
-  if (typeof FB !== 'undefined') {
-    FB.logout();
-  }
   
   // Update UI
   updateAuthButtons();
@@ -727,36 +512,6 @@ function checkAuthState() {
 
 // Update Social Button Handlers
 function updateSocialButtonHandlers() {
-  // Google Login
-  const googleButtons = document.querySelectorAll('.social-btn.google, .quick-social-btn.google');
-  googleButtons.forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      handleGoogleSignIn();
-    });
-  });
-  
-  // Facebook Login
-  const facebookButtons = document.querySelectorAll('.social-btn.facebook, .quick-social-btn.facebook');
-  facebookButtons.forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      handleFacebookLogin();
-    });
-  });
-  
-  // Twitter Login
-  const twitterButtons = document.querySelectorAll('.social-btn.twitter, .quick-social-btn.twitter');
-  twitterButtons.forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      handleTwitterLogin();
-    });
-  });
-  
   // Demo Login
   const demoButtons = document.querySelectorAll('.social-btn.demo, .quick-social-btn.demo');
   demoButtons.forEach(btn => {
@@ -801,21 +556,14 @@ function initDesktopModal() {
   
   // Open modal from desktop buttons
   signUpBtns.forEach(btn => {
-    if (btn.classList.contains('sign-up-btn') || btn.id === 'floating-mobile-signup') {
+    if (btn.classList.contains('sign-up-btn')) {
       btn.addEventListener("click", (e) => {
         e.preventDefault();
         if (window.innerWidth >= 769) {
           // Desktop: Open main modal directly
           modal.style.display = "block";
           document.body.style.overflow = "hidden";
-        } else {
-          // Mobile: Open account options modal
-          mobileAccountModal.style.display = "block";
-          document.body.style.overflow = "hidden";
         }
-        
-        // Add ripple effect
-        addRippleEffect(btn, e);
       });
     }
   });
@@ -890,10 +638,6 @@ function initDesktopModal() {
   if (signinFormEl) {
     signinFormEl.addEventListener('submit', (e) => {
       e.preventDefault();
-      const email = document.getElementById('signin-email').value;
-      const password = document.getElementById('signin-password').value;
-      
-      // Simulate login
       simulateAuth('Signing in...', 'Welcome back!');
     });
   }
@@ -991,10 +735,6 @@ function initMobileAccountModal() {
       e.preventDefault();
       e.stopPropagation();
       
-      const platform = btn.classList.contains('google') ? 'Google' : 
-                      btn.classList.contains('facebook') ? 'Facebook' : 
-                      btn.classList.contains('demo') ? 'Demo' : 'Twitter';
-      
       // Show loading
       const modalBody = mobileAccountModal.querySelector('.modal-body');
       const originalContent = modalBody.innerHTML;
@@ -1002,7 +742,7 @@ function initMobileAccountModal() {
       modalBody.innerHTML = `
         <div class="loading-auth">
           <i class="ri-loader-4-line animate-spin" style="font-size: 3rem; color: var(--primary-color);"></i>
-          <p>Connecting with ${platform}...</p>
+          <p>Logging in...</p>
         </div>
       `;
       
@@ -1011,16 +751,8 @@ function initMobileAccountModal() {
         mobileAccountModal.style.display = "none";
         document.body.style.overflow = "auto";
         
-        // Handle login based on platform
-        if (platform === 'Google') {
-          handleGoogleSignIn();
-        } else if (platform === 'Facebook') {
-          handleFacebookLogin();
-        } else if (platform === 'Twitter') {
-          handleTwitterLogin();
-        } else if (platform === 'Demo') {
-          handleDemoLogin();
-        }
+        // Handle demo login
+        handleDemoLogin();
         
         // Reset modal content
         setTimeout(() => {
@@ -1130,12 +862,6 @@ function initBackToTop() {
       top: 0,
       behavior: "smooth"
     });
-    
-    // Add bounce animation
-    backToTop.style.animation = "bounceIn 0.6s ease";
-    setTimeout(() => {
-      backToTop.style.animation = "";
-    }, 600);
   });
 }
 
@@ -1151,6 +877,9 @@ function initCounters() {
         const duration = 2000;
         const step = target / (duration / 16);
         let current = 0;
+        
+        // Reset to 0
+        counter.textContent = "0";
         
         const updateCounter = () => {
           current += step;
@@ -1192,11 +921,6 @@ function initScrollAnimations() {
     ScrollReveal().reveal(".header__content .section__description", {
       ...scrollRevealOption,
       delay: 600
-    });
-    
-    ScrollReveal().reveal(".header__btns", {
-      ...scrollRevealOption,
-      delay: 900
     });
     
     ScrollReveal().reveal(".stats-container", {
@@ -1297,19 +1021,11 @@ function initSwiper() {
 document.addEventListener("click", function(e) {
   // Add ripple to all buttons
   if (e.target.classList.contains("btn") || 
-      e.target.closest(".btn") || 
-      e.target.classList.contains("video-link") ||
-      e.target.closest(".video-link") ||
-      e.target.classList.contains("hero-btn") ||
-      e.target.closest(".hero-btn")) {
+      e.target.closest(".btn")) {
     
-    const button = e.target.classList.contains("btn") || 
-                   e.target.classList.contains("video-link") ||
-                   e.target.classList.contains("hero-btn")
+    const button = e.target.classList.contains("btn") 
       ? e.target 
-      : e.target.closest(".btn") || 
-        e.target.closest(".video-link") || 
-        e.target.closest(".hero-btn");
+      : e.target.closest(".btn");
     
     const ripple = document.createElement("span");
     const rect = button.getBoundingClientRect();
@@ -1355,49 +1071,10 @@ function initParallax() {
   });
 }
 
-// How It Works Button Functionality
-function initHowItWorks() {
-  const howItWorksBtn = document.querySelector('.hero-btn');
-  if (howItWorksBtn) {
-    howItWorksBtn.addEventListener('click', () => {
-      // Scroll to services section
-      document.querySelector('.service').scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'start'
-      });
-      
-      // Show tutorial modal or animation
-      setTimeout(() => {
-        showNotification("Learn how we work in 3 simple steps!", "info");
-      }, 1000);
-    });
-  }
-  
-  // Video link functionality
-  const videoLink = document.querySelector('.video-link');
-  if (videoLink) {
-    videoLink.addEventListener('click', (e) => {
-      e.preventDefault();
-      showNotification("Our story video will play here!", "info");
-    });
-  }
-}
-
 // Mobile Responsive Adjustments
 function initMobileResponsive() {
-  // Hide floating mobile sign up button on desktop
-  const floatingMobileSignup = document.getElementById('floating-mobile-signup');
-  
   function checkMobile() {
-    if (window.innerWidth < 769) {
-      if (floatingMobileSignup) {
-        floatingMobileSignup.style.display = 'flex';
-      }
-    } else {
-      if (floatingMobileSignup) {
-        floatingMobileSignup.style.display = 'none';
-      }
-    }
+    // No floating mobile signup button needed
   }
   
   // Initial check
@@ -1407,13 +1084,59 @@ function initMobileResponsive() {
   window.addEventListener('resize', checkMobile);
 }
 
-// Fix for desktop text display
-function fixDesktopTextDisplay() {
-  const headerTitle = document.querySelector('.header__content h1');
-  if (headerTitle && window.innerWidth >= 769) {
-    // Ensure the text breaks properly on desktop
-    headerTitle.innerHTML = headerTitle.innerHTML.replace('Digital Products,', 'Digital Products,<br>');
-  }
+// Update Navigation Active State
+function updateNavigationActiveState() {
+  const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+  
+  // Desktop navigation
+  const desktopLinks = document.querySelectorAll('.nav-link');
+  desktopLinks.forEach(link => {
+    link.classList.remove('active');
+    const href = link.getAttribute('href');
+    
+    // Check for exact page match
+    if (href === currentPage) {
+      link.classList.add('active');
+    }
+    // Check for home page (index.html or #home)
+    else if ((currentPage === 'index.html' || currentPage === '') && 
+             (href === '#home' || href === 'index.html')) {
+      link.classList.add('active');
+    }
+    // Check for about page
+    else if (currentPage === 'about.html' && href === 'about.html') {
+      link.classList.add('active');
+    }
+    // Check for courses page
+    else if (currentPage === 'courses.html' && href === 'courses.html') {
+      link.classList.add('active');
+    }
+  });
+  
+  // Mobile navigation
+  const mobileLinks = document.querySelectorAll('.mobile-nav__item[href]');
+  mobileLinks.forEach(link => {
+    link.classList.remove('active');
+    const href = link.getAttribute('href');
+    
+    // Check for exact page match
+    if (href === currentPage) {
+      link.classList.add('active');
+    }
+    // Check for home page
+    else if ((currentPage === 'index.html' || currentPage === '') && 
+             (href === '#home' || href === 'index.html')) {
+      link.classList.add('active');
+    }
+    // Check for about page
+    else if (currentPage === 'about.html' && href === 'about.html') {
+      link.classList.add('active');
+    }
+    // Check for courses page
+    else if (currentPage === 'courses.html' && href === 'courses.html') {
+      link.classList.add('active');
+    }
+  });
 }
 
 // Global click handler to close dropdowns when clicking outside
@@ -1434,17 +1157,6 @@ function initGlobalClickHandler() {
     const logoutBtn = e.target.closest('.logout-btn');
     if (logoutBtn) {
       const dropdown = logoutBtn.closest('.user-dropdown, .mobile-user-dropdown');
-      if (dropdown) dropdown.remove();
-      const overlay = document.querySelector('.dropdown-overlay');
-      if (overlay) overlay.remove();
-      document.body.style.overflow = '';
-      return;
-    }
-    
-    // Check if click is on dropdown item (not logout)
-    const dropdownItem = e.target.closest('.dropdown-item:not(.logout-btn)');
-    if (dropdownItem) {
-      const dropdown = dropdownItem.closest('.user-dropdown, .mobile-user-dropdown');
       if (dropdown) dropdown.remove();
       const overlay = document.querySelector('.dropdown-overlay');
       if (overlay) overlay.remove();
@@ -1494,23 +1206,22 @@ function initGlobalClickHandler() {
 // Initialize everything when DOM is loaded
 document.addEventListener("DOMContentLoaded", () => {
   initTheme();
-  initAuthentication(); // Initialize authentication
+  initAuthentication();
   initDesktopModal();
   initMobileAccountModal();
-  addDemoLoginButton(); // Add demo login button
-  updateSocialButtonHandlers(); // Update social button handlers
-  initGlobalClickHandler(); // Add global click handler
+  addDemoLoginButton();
+  updateSocialButtonHandlers();
+  initGlobalClickHandler();
   initBackToTop();
   initCounters();
   initScrollAnimations();
   initSwiper();
   initParallax();
-  initHowItWorks();
   initMobileResponsive();
-  fixDesktopTextDisplay();
+  updateNavigationActiveState();
   
-  // Re-fix text display on resize
-  window.addEventListener('resize', fixDesktopTextDisplay);
+  // Update navigation on hash change
+  window.addEventListener('hashchange', updateNavigationActiveState);
   
   // Add CSS for notifications and animations
   const style = document.createElement("style");
@@ -1558,11 +1269,6 @@ document.addEventListener("DOMContentLoaded", () => {
     
     .animate-spin {
       animation: animate-spin 1s linear infinite;
-    }
-    
-    .confetti {
-      position: fixed;
-      pointer-events: none;
     }
     
     .loading-auth {
@@ -1627,16 +1333,30 @@ document.addEventListener("DOMContentLoaded", () => {
         opacity: 0;
       }
     }
+    
+    /* Active navigation state styles */
+    .nav-link.active {
+      color: var(--primary-color) !important;
+      background: rgba(var(--primary-color-rgb), 0.1);
+    }
+    
+    .nav-link.active::after {
+      width: 60% !important;
+    }
+    
+    .mobile-nav__item.active {
+      color: var(--primary-color) !important;
+      background: rgba(var(--primary-color-rgb), 0.1) !important;
+      transform: translateY(-5px);
+    }
+    
+    .mobile-nav__item.active.signup-item,
+    .mobile-nav__item.active.user-item {
+      background: linear-gradient(135deg, #ff5e62 0%, var(--primary-color) 100%) !important;
+      color: var(--white) !important;
+    }
   `;
   document.head.appendChild(style);
-  
-  // Add hover effect to all interactive elements
-  const interactiveElements = document.querySelectorAll("a, button, .service__card, .portfolio__list li, .about__list li");
-  interactiveElements.forEach(el => {
-    el.addEventListener("mouseenter", () => {
-      el.style.transition = "var(--transition)";
-    });
-  });
   
   // Initialize tooltips
   const tooltipElements = document.querySelectorAll("[data-tooltip]");
@@ -1707,7 +1427,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
     
-    // Login with Ctrl+L
+    // Demo login with Ctrl+L
     if (e.ctrlKey && e.key === "l") {
       e.preventDefault();
       handleDemoLogin();
@@ -1746,7 +1466,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (typeof Swiper !== 'undefined') {
         initSwiper();
       }
-      fixDesktopTextDisplay();
+      updateNavigationActiveState();
     }, 250);
   });
 });
@@ -1757,11 +1477,12 @@ window.addEventListener("error", (e) => {
   showNotification("An error occurred. Please try again.", "info");
 });
 
-// Service Worker for PWA (optional)
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/sw.js").catch(err => {
-      console.log("ServiceWorker registration failed: ", err);
-    });
-  });
-}
+
+
+
+
+
+
+
+
+
